@@ -1,0 +1,34 @@
+
+<div class="card bg-base-100 w-96 shadow-sm">
+  <figure>
+    <a href="#">
+    <img src="{{ product().images.at(0) }}" alt="Shoes" />
+    </a>
+  </figure>
+  <div class="card-body justify-start">
+    <h2 class="card-title font-Poppins">{{ product().description | titlecase }}</h2>
+    <h4 class="font-Poppins">
+      Referencia <b>{{ product().reference }}</b>
+    </h4>
+    <h4 class="font-Poppins">
+      {{ product().category | titlecase }} - {{ product().gender | gender }}
+    </h4>
+    <div class="flex items-center justify-start gap-3">
+    <h4 class="inline-block font-bold text-gray-500 font-Poppins">
+      {{ product().color | array }}
+    </h4>
+    <div class="flex gap-2">
+      @for(color of product().color; track color){
+        <div class="inline w-[15px] h-[15px]" [style.backgroundColor]="color" style="border-radius: 50%;"></div>
+      }
+    </div>
+    </div>
+  <span class="text-xl font-semibold font-Poppins">{{
+    product().price | currency : 'COP' : 'symbol' : '1.0-0'
+  }}</span>
+  <div class="flex justify-end gap-2">
+    <div class="card-actions justify-end">
+      <button class="btn btn-primary font-Poppins">Comprar</button>
+    </div>
+  </div>
+</div>
