@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductService } from '../services/products.service';
-import { Jean } from '../interfaces/product.interface';
+import { Jean, ProductFilters } from '../interfaces/product.interface';
 import { Card } from '../components/card/card';
 
 @Component({
@@ -11,7 +11,8 @@ import { Card } from '../components/card/card';
 })
 export class ProductList {
 
-  private prodSevice=inject(ProductService)
-  prod=toSignal(this.prodSevice.getProducts(), { initialValue: [] as Jean[] });
+
+  prod=input.required<Jean[]>();
+  filters=input.required<ProductFilters>()
 
 }

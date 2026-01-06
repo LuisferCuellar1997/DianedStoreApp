@@ -1,0 +1,142 @@
+<div class="drawer font-Poppins">
+  <input id="my-drawer-1" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content">
+    <!-- Page content here -->
+    <label for="my-drawer-1" class="btn drawer-button btn-ghost btn-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          d="M11 20q-.425 0-.712-.288T10 19v-6L4.2 5.6q-.375-.5-.112-1.05T5 4h14q.65 0 .913.55T19.8 5.6L14 13v6q0 .425-.288.713T13 20zm1-7.7L16.95 6h-9.9zm0 0"
+        />
+      </svg>
+    </label>
+    <span>Filtros</span>
+  </div>
+  <div class="drawer-side">
+    <label for="my-drawer-1" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu bg-base-200 min-h-full w-80 p-4 flex gap-2">
+      <form [formGroup]="form"  class="">
+        <h2 class="card-title py-4">Filtros</h2>
+        <!-- Sidebar content here -->
+        <div class="collapse collapse-arrow gap-2">
+          <input type="checkbox" />
+          <div class="collapse-title font-semibold">Género</div>
+          <div class="collapse-content text-sm flex flex-col gap-2">
+            <div class="flex justify-start align-middle">
+              <input
+                class="inline-block"
+                type="checkbox"
+                [checked]="form.value.gender?.includes('female')"
+                (change)="toggleArray('gender', 'female')"
+                class="checkbox checkbox-sm"
+              />
+              <label class="ml-2" for="mujer">Dama</label>
+            </div>
+
+            <div class="flex justify-start align-middle">
+              <input
+                class="inline-block"
+                type="checkbox"
+                id="caballero"
+                class="checkbox checkbox-sm"
+                [checked]="form.value.gender?.includes('male')"
+                (change)="toggleArray('gender', 'male')"
+              />
+              <label class="ml-2" for="caballero">Caballero</label>
+            </div>
+
+            <div class="flex justify-start align-middle">
+              <input
+                class="inline-block"
+                type="checkbox"
+                id="caballero"
+                class="checkbox checkbox-sm"
+                [checked]="form.value.gender?.includes('child')"
+                (change)="toggleArray('gender', 'child')"
+              />
+              <label class="ml-2" for="caballero">Niño</label>
+            </div>
+          </div>
+        </div>
+        <div class="collapse collapse-arrow gap-2">
+          <input type="checkbox" />
+          <div class="collapse-title font-semibold">Categoría</div>
+          <div class="collapse-content text-sm flex flex-col gap-2">
+            <!--TODO: Hacer esto dinámico  -->
+            <div class="flex justify-start align-middle">
+              <input
+                class="inline-block"
+                type="checkbox"
+                [checked]="form.value.category?.includes('jean')"
+                (change)="toggleArray('category', 'jean')"
+                id="mujer"
+                class="checkbox checkbox-sm"
+              />
+              <label class="ml-2" for="mujer">Jeans</label>
+            </div>
+
+            <div class="flex justify-start align-middle">
+              <input
+                class="inline-block"
+                type="checkbox"
+                id="caballero"
+                class="checkbox checkbox-sm"
+                [checked]="form.value.category?.includes('vestido')"
+                (change)="toggleArray('category', 'vestido')"
+              />
+              <label class="ml-2" for="caballero">Vestidos</label>
+            </div>
+
+            <div class="flex justify-start align-middle">
+              <input
+                class="inline-block"
+                type="checkbox"
+                id="caballero"
+                class="checkbox checkbox-sm"
+                [checked]="form.value.category?.includes('short')"
+                (change)="toggleArray('category', 'short')"
+              />
+              <label class="ml-2" for="caballero">Shorts</label>
+            </div>
+          </div>
+        </div>
+        <div class="collapse collapse-arrow gap-2">
+          <input type="checkbox" />
+          <div class="collapse-title font-semibold">Marca</div>
+          <div class="collapse-content text-sm flex flex-col gap-2">
+            <!--TODO: Hacer esto dinámico  -->
+            <div class="flex justify-start align-middle">
+              <input class="inline-block" [checked]="form.value.brand?.includes('kabala')"
+                (change)="toggleArray('brand', 'kabala')" type="checkbox" id="mujer" class="checkbox checkbox-sm" />
+              <label class="ml-2" for="kabala">Kabala jeans</label>
+            </div>
+          </div>
+        </div>
+        <div class="collapse collapse-arrow gap-2">
+          <input type="checkbox" />
+          <div class="collapse-title font-semibold">Precio</div>
+          <div class="collapse-content text-sm flex flex-col gap-2">
+            <!--TODO: Hacer esto dinámico  -->
+            <div class="w-full max-w-xs">
+              <input type="range" formControlName="maxPrice" min="40" max="100" value="80" class="range" step="10" />
+              <div class="flex justify-between px-2.5 mt-2 text-xs">
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+              </div>
+              <div class="flex justify-between px-3 mt-2 text-xs">
+                <span>40k</span>
+                <span>60k</span>
+                <span>80k</span>
+                <span>90k</span>
+                <span>100k</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </ul>
+  </div>
+</div>
