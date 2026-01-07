@@ -1,5 +1,40 @@
-<div class="my-4">
-<app-navbar (searchChange)="updateFilters({ search: $event })" (filtersChange)="updateFilters($event)"/>
-<app-product-list [filters]="filters()" [prod]="filteredProducts()"/>
-</div>
+<div>
+  <app-navbar
+    (searchChange)="updateFilters({ search: $event })"
+    (filtersChange)="updateFilters($event)"
+  />
+  <div class="my-4">
+    <!-- <div class="fixed inset-0 z-40 bg-black/30 flex items-center justify-center">
+        <span class="loading loading-infinity loading-xl text-white"></span>
+      </div> -->
+    <app-product-list
+      [loading]="loading()"
+      [filters]="filters()"
+      [prod]="paginatedProducts()"
+      [pageSize]="pageSize()"
+      [hasInterected]="showNoResults()"
+    />
+    @if (totalPages() > 1) {
+    <div class="flex justify-center gap-2 mt-8">
+      <!-- ⬅️ Anterior -->
+      <button class="btn btn-sm" [disabled]="page() === 1" (click)="page.set(page() - 1)">«</button>
 
+      <!-- 🔢 Páginas -->
+      @for (p of [].constructor(totalPages()); let i = $index; track $index) {
+      <button class="btn btn-sm" [class.btn-primary]="page() === i + 1" (click)="page.set(i + 1)">
+        {{ i + 1 }}
+      </button>
+      }
+
+      <!-- ➡️ Siguiente -->
+      <button
+        class="btn btn-sm"
+        [disabled]="page() === totalPages()"
+        (click)="page.set(page() + 1)"
+      >
+        »
+      </button>
+    </div>
+    }
+  </div>
+</div>
