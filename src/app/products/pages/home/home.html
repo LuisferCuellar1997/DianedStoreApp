@@ -17,23 +17,31 @@
     @if (totalPages() > 1) {
     <div class="flex justify-center gap-2 mt-8">
       <!-- ⬅️ Anterior -->
-      <button class="btn btn-sm" [disabled]="page() === 1" (click)="page.set(page() - 1)">«</button>
-
-      <!-- 🔢 Páginas -->
+    <button
+      class="btn btn-sm"
+      [disabled]="page() === 1"
+      (click)="goToPage(page() - 1)"
+    >
+      «
+    </button>
       @for (p of [].constructor(totalPages()); let i = $index; track $index) {
-      <button class="btn btn-sm" [class.btn-primary]="page() === i + 1" (click)="page.set(i + 1)">
-        {{ i + 1 }}
-      </button>
-      }
-
-      <!-- ➡️ Siguiente -->
       <button
         class="btn btn-sm"
-        [disabled]="page() === totalPages()"
-        (click)="page.set(page() + 1)"
+        [class.btn-primary]="page() === i + 1"
+        (click)="goToPage(i + 1)"
       >
-        »
+        {{ i + 1 }}
       </button>
+    }
+
+    <!-- ➡️ Siguiente -->
+    <button
+      class="btn btn-sm"
+      [disabled]="page() === totalPages()"
+      (click)="goToPage(page() + 1)"
+    >
+      »
+    </button>
     </div>
     }
   </div>

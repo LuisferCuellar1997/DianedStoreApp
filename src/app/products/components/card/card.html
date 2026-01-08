@@ -1,7 +1,7 @@
 <div class="card bg-base-100 shadow-sm gap-0">
   <figure>
-    <a [routerLink]="[product().id]">
-      <img class="cursor-pointer" src="{{ product().images.at(0) }}" alt="product().description" />
+    <a (click)="saveScroll()" [routerLink]="['/products',product().id]" queryParamsHandling="preserve">
+      <img class="cursor-pointer animate-fadeIn " src="{{ product().images.at(0) }}" alt="product().description" />
     </a>
   </figure>
   <div class="card-body justify-start py-2">
@@ -12,16 +12,6 @@
     <h4 class="font-Poppins">
       {{ product().category | titlecase }} - {{ product().gender | gender }}
     </h4>
-    <!-- <div class="flex items-center justify-start gap-3">
-    <h4 class="inline-block font-bold text-gray-500 font-Poppins">
-      {{ product().color | array }}
-    </h4>
-    <div class="flex gap-2">
-      @for(color of product().color; track color){
-        <div class="inline w-3.75 h-3.75" [style.backgroundColor]="color" style="border-radius: 50%;"></div>
-      }
-    </div>
-    </div> -->
     <span class="text-xl font-semibold font-Poppins">{{
       product().price | currency : 'COP' : 'symbol' : '1.0-0'
     }}</span>

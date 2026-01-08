@@ -1,11 +1,13 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
-import { Card } from '../../components/card/card';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ProductService } from '../../services/products.service';
-import { Jean, Product, ProductFilters } from '../../interfaces/product.interface';
+import { Jean, ProductFilters } from '../../interfaces/product.interface';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductList } from '../product-list/product-list';
 import { Navbar } from '../../../share/components/navbar/navbar';
 import { FilterService } from '../../services/filter.service';
+import { ScrollService } from '../../../share/components/services/scroll-service.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -14,18 +16,20 @@ import { FilterService } from '../../services/filter.service';
   templateUrl: './home.html',
 })
 export class Home {
-  private prodSevice = inject(ProductService);
 
-  private filterService=inject(FilterService)
+  private prodService = inject(ProductService);
+  private filterService = inject(FilterService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private scrollService = inject(ScrollService);
 
-  prod = toSignal(this.prodSevice.getJeans(), { initialValue: [] as Jean[] });
+  prod = toSignal(this.prodService.getJeans(), { initialValue: [] as Jean[] });
 
-  loading = signal(false);
-
+  loading = signal(true);
   hasInteracted = signal(false);
 
-  page=signal(1);
-  pageSize=signal(9);
+  page = signal(1);
+  pageSize = signal(9);
 
   filters = signal<ProductFilters>({
     search: '',
@@ -35,22 +39,63 @@ export class Home {
     maxPrice: null,
   });
 
-  showNoResults = computed(() =>
-  this.hasInteracted() &&
-  !this.loading() &&
-  this.filteredProducts().length === 0
-  );
+  private loadingTimeout: any;
 
-  filteredProducts = computed(() => {
-    if(this.filters().maxPrice!==null){
-      this.filters().maxPrice!*=1000;
+  constructor() {
+  this.route.queryParamMap.subscribe(params => {
+    const pageParam = Number(params.get('page')) || 1;
+    this.page.set(pageParam);
+  });
+
+  effect(() => {
+    this.filters();
+    this.prod();
+
+    this.loading.set(true);
+
+    if (this.loadingTimeout) {
+      clearTimeout(this.loadingTimeout);
     }
+
+    this.loadingTimeout = setTimeout(() => {
+      this.loading.set(false);
+    }, 500);
+  });
+
+  this.router.events
+    .pipe(filter(e => e instanceof NavigationStart))
+    .subscribe((event: any) => {
+      if (event.navigationTrigger === 'popstate') {
+        this.scrollService.markForRestore();
+      }
+    });
+
+  effect(() => {
+    if (!this.loading()) {
+      setTimeout(() => {
+        this.scrollService.restoreIfNeeded();
+      });
+    }
+  });
+}
+
+
+  // 🔹 Filtros (SIN mutar estado)
+  filteredProducts = computed(() => {
+    const filters = this.filters();
+
+    const normalizedFilters: ProductFilters = {
+      ...filters,
+      maxPrice: filters.maxPrice !== null ? filters.maxPrice * 1000 : null,
+    };
+
     return this.filterService.filterProducts(
       this.prod(),
-      this.filters()
+      normalizedFilters
     );
   });
 
+  // 🔹 Paginado
   paginatedProducts = computed(() => {
     const page = this.page();
     const size = this.pageSize();
@@ -65,40 +110,34 @@ export class Home {
     Math.ceil(this.filteredProducts().length / this.pageSize())
   );
 
-  private loadingTimeout: any;
+  showNoResults = computed(() =>
+    this.hasInteracted() &&
+    !this.loading() &&
+    this.filteredProducts().length === 0
+  );
+
+  // 🔹 Cambiar filtros
   updateFilters(partial: Partial<ProductFilters>) {
     this.hasInteracted.set(true);
-    this.loading.set(true);
-    if (this.loadingTimeout) {
-      clearTimeout(this.loadingTimeout);
-    }
-    this.page.set(1);
-    this.filters.update((current) => ({...current, ...partial,}));
-    this.loadingTimeout = setTimeout(() => {
-      this.loading.set(false);
-    }, 1000);
+    this.filters.update(current => ({ ...current, ...partial }));
+
+    // actualizar URL
+    this.router.navigate([], {
+      queryParams: { page: 1 },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  goToPage(page: number) {
+    this.page.set(page);
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page },
+      queryParamsHandling: 'merge',
+    });
   }
 
 
-  /* filteredProducts = computed(() => {
-    const f = this.filters();
-    if (f.maxPrice != null) f.maxPrice *= 1000;
-    console.log(f.maxPrice);
-    console.log(f.search);
-    return this.prod().filter((p) => {
-      if (f.search) {
-        const term = f.search.toLowerCase();
-        const matchDescription = p.description?.toLowerCase().includes(term);
-        const matchReference = p.reference?.toLowerCase().includes(term);
-        if (!matchDescription && !matchReference) {
-          return false;
-        }
-      }
-      if (f.gender.length && !f.gender.includes(p.gender)) return false;
-      if (f.category.length && !f.category.includes(p.category)) return false;
-      if (f.brand.length && !f.brand.includes(p.brand)) return false;
-      if (f.maxPrice !== null && p.price > f.maxPrice) return false;
-      return true;
-    });
-  }); */
+
 }

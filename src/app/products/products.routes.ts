@@ -4,15 +4,15 @@ import { ProductDetail } from './pages/product-detail/product-detail';
 
 export const productsRoutes: Routes = [
   {
-    path: '',
+    path: 'products',
     component: Home,
   },
   {
-    path:':id',
+    path:'products/:id',
     component:ProductDetail
   },
   {
     path: '**',
-    redirectTo: '',
+    redirectTo: 'products',
   },
 ];

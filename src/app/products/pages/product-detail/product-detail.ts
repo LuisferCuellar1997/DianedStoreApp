@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Navbar } from '../../../share/components/navbar/navbar';
 import { ProductService } from '../../services/products.service';
 import { ActivatedRoute } from '@angular/router';
@@ -10,43 +10,70 @@ import { ArrayPipe } from '../../pipes/arrays-pipe.pipe';
 import { FilterService } from '../../services/filter.service';
 import { Card } from '../../components/card/card';
 import { ProductList } from '../product-list/product-list';
+import { Skeleton } from '../../../share/components/skeleton/skeleton';
+import { ScrollService } from '../../../share/components/services/scroll-service.service';
+import { ProductSimilar } from '../../components/product-similar/product-similar';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [Navbar, TitleCasePipe, CurrencyPipe, Card, ProductList],
+  imports: [Navbar, TitleCasePipe, CurrencyPipe, Skeleton, ProductSimilar],
   templateUrl: './product-detail.html',
+  styleUrl: './product-detail.css',
 })
 export class ProductDetail {
-
-  private route=inject(ActivatedRoute)
+  private route = inject(ActivatedRoute);
   private prodService = inject(ProductService);
   private filterService = inject(FilterService);
+  private scrollService = inject(ScrollService);
+  loading = signal(true);
   prod = toSignal(this.prodService.getJeans(), { initialValue: [] as Jean[] });
+
   filters = signal<ProductFilters>({
     search: '',
     gender: [],
-    category: ['jean'],
+    category: [],
     brand: [],
     maxPrice: null,
   });
 
-   filteredProducts = computed(() => {
-    return this.filterService.filterProducts(
-      this.prod(),
-      this.filters()
-    );
+  filteredProducts = computed(() => {
+    const current = this.product();
+    if (!current) return [];
+
+    return this.filterService
+      .filterProducts(this.prod(), this.filters())
+      .filter((p) => p.id !== current.id);
   });
 
   productId = this.route.snapshot.paramMap.get('id');
   product = toSignal(
     this.route.paramMap.pipe(
-      map(params => params.get('id')),
-      tap(id => console.log('ID desde URL:', id)),
-      switchMap(id =>
-        id ? this.prodService.getProductById(id) : []
-      ),
-      tap(product => console.log('Producto desde Firebase:', product))
+      map((params) => params.get('id')),
+      tap((id) => console.log('ID desde URL:', id)),
+      switchMap((id) => (id ? this.prodService.getProductById(id) : [])),
+      tap((product) => console.log('Producto desde Firebase:', product))
     ),
     { initialValue: null }
   );
+
+  constructor() {
+    effect(() => {
+      const product = this.product();
+
+      if (!product) return;
+
+      // 🔁 actualizar filtros dinámicamente
+      this.filters.update((f) => ({
+        ...f,
+        category: [product.category],
+      }));
+
+      // ⬆️ scroll al inicio solo cuando cambia el producto
+      window.scrollTo({ top: 0 });
+
+      // ⏳ skeleton
+      this.loading.set(true);
+      setTimeout(() => this.loading.set(false), 500);
+    });
+  }
 }

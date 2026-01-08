@@ -1,0 +1,13 @@
+<div class="overflow-hidden">
+  <div
+    #scrollContainer
+    class="flex gap-4 overflow-x-auto scroll-smooth
+           max-w-full no-scrollbar"
+  >
+    @for (product of products(); track product.id) {
+      <div class="min-w-65 max-w-65 shrink-0">
+        <app-card [product]="product"></app-card>
+      </div>
+    }
+  </div>
+</div>

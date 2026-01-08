@@ -2,10 +2,12 @@
   <div class="navbar-start">
     <div class="dropdown">
       <!--  -->
-      <app-right-navbar
-        (filtersChange)="onFiltersChange($event)">
-      </app-right-navbar>
+      @if(showFilters()){
+        <app-right-navbar
+          (filtersChange)="onFiltersChange($event)">
+        </app-right-navbar>
       <!--  -->
+      }
     </div>
   </div>
   <div class="navbar-center">
