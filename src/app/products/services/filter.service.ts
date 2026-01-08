@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Jean, ProductFilters } from '../interfaces/product.interface';
+import { filter } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class FilterService {

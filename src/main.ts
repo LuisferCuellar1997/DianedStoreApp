@@ -26,6 +26,5 @@ bootstrapApplication(App,  {
     provideStorage(() => getStorage()),
   ],
 }).then(()=>{
-   console.log('App bootstrapped correctamente');
 })
 .catch((err) => console.error(err));

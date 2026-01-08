@@ -5,13 +5,9 @@ import { Jean } from '../interfaces/product.interface';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
-  constructor() {
-    console.log('✅ ProductService instanciado');
-  }
   private firestore=inject(Firestore)
 
   getJeans():Observable<Jean[]>{
-    console.log("CONSULTA")
     const prodsRef=collection(this.firestore,'products');
     return collectionData(prodsRef,{idField:'id'}) as Observable<Jean[]>;
   }

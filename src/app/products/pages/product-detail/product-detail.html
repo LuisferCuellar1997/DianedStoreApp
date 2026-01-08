@@ -1,4 +1,88 @@
-<div>
-  <app-navbar/>
-  <p>{{prodSelected}}</p>
+<div class="font-Poppins">
+  <app-navbar class="" />
+  <!-- <div class="flex justify-center ">Envíos gratis a todo el paíz</div> -->
+  <div class="container mx-auto px-4">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 lg:gap-8 py-4"
+    >
+      <!-- IMAGEN -->
+      <div class="flex justify-center lg:justify-end">
+        <img
+          [src]="product()?.images?.at(0)"
+          alt="Producto"
+          class="w-full max-w-105 max-h-130 object-contain rounded-2xl shadow"
+        />
+      </div>
+
+      <!-- CONTENIDO -->
+
+      <div class="flex flex-col justify-center space-y-5 max-w-md">
+        <div>
+        <h1 class="font-Poppins mb-1 text-3xl font-bold">
+          {{ product()?.description | titlecase }}
+        </h1>
+        <p class="text-base font-bold text-base-content/70 leading-relaxed">
+          {{product()?.price |currency : 'COP' : 'symbol' : '1.0-0'}}
+        </p>
+        </div>
+        <p class="text-base text-base-content/70 leading-relaxed">
+          Referencia : <b>{{product()?.reference}}</b>
+        </p>
+        <p class="text-base text-base-content/70 leading-relaxed">
+          Marca : <b>{{product()?.brand|titlecase}}</b>
+        </p>
+        <p class="text-base text-base-content/70 leading-relaxed">
+          Categoría: <b>{{ product()?.category | titlecase }}</b>
+        </p>
+        <div >
+          <p class="text-base text-base-content/70 leading-relaxed mr-3">
+            Selecciona el Color
+          </p>
+          <div class="flex gap-2">
+          @for(color of product()?.color;let i=$index;track $index){
+          <div class="h-5 w-8 rounded border" [style.backgroundColor]="'#' + color"></div>
+          }
+          </div>
+        </div>
+        <div>
+          <p class="text-base text-base-content/70 leading-relaxed">
+            Selecciona la talla
+          </p>
+          <div class="flex gap-2 w-full ">
+              @for(size of product()?.stock; track size){
+              <a class="btn flex-1 rounded-lg border text-sm hover:bg-gray-100 transition" [class.btn-dash]="size.count===0" >
+                {{ size.size }}
+              </a>
+              }
+            </div>
+          <div>
+        </div>
+        <p class="text-base font-bold text-base-content/70 leading-relaxed">
+          Envío*
+        </p>
+        <p class="text-base font-bold text-base-content/70 leading-relaxed">
+          Se realiza por transportadora, medio de pago contraentrega
+        </p></div>
+        <div class="flex">
+          <button class="btn flex-1 h-14 mb-2 btn-primary w-fit rounded-[30px]">Agregar a la bolsa de compras</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 class="mx-5 my-4 font-Poppins text-2xl leading-relaxed">
+  Prendas similares
+</h2>
+<div class="carousel px-4 carousel-center rounded-box">
+  <!-- Crear otra lista de productos para mostrar los productos similares a este -->
+  <!-- @for(prod of filteredProducts();let i=$index;track i ){
+
+    <div class="carousel-item mr-2">
+
+    </div>
+    <div class="carousel-item mr-2">
+
+      <img src="{{prod.images.at(0)}}" class="h-[300px]" alt="Pizza" />
+    </div>
+  } -->
 </div>

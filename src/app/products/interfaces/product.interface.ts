@@ -14,7 +14,7 @@ export interface Product{
 
 export interface Stock{
   size:string,
-  stock:number
+  count:number
 }
 
 export interface Jean extends Product{

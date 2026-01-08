@@ -42,6 +42,9 @@ export class Home {
   );
 
   filteredProducts = computed(() => {
+    if(this.filters().maxPrice!==null){
+      this.filters().maxPrice!*=1000;
+    }
     return this.filterService.filterProducts(
       this.prod(),
       this.filters()
