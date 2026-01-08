@@ -15,7 +15,9 @@
   </div>
   <div class="navbar-end lg:xl:flex lg:xl:gap-5">
     <!--  -->
-    <app-search-bar (termino)="search($event)"/>
+    @if(showSearchbar()){
+      <app-search-bar (termino)="search($event)"/>
+    }
     <!--  -->
     <div class="dropdown dropdown-end">
       <div tabindex="0" role="button" class="btn btn-ghost btn-circle">

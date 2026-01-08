@@ -1,16 +1,13 @@
 <div class="font-Poppins">
-  <app-navbar [showFilters]="false" />
+  <app-navbar [showFilters]="false" [showSearchbar]="false" />
   <!-- <div class="flex justify-center ">Envíos gratis a todo el paíz</div> -->
-    @if (loading()) {
+  @if (loading()) {
 
-      <app-skeleton [template]="'product-detail'"></app-skeleton>
+  <app-skeleton [template]="'product-detail'"></app-skeleton>
 
-    }
-  @else{
+  } @else{
   <div class="container mx-auto px-4">
-    <div
-      class="grid grid-cols-1 lg:grid-cols-2 lg:gap-8 py-4"
-    >
+    <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-8 py-4">
       <!-- IMAGEN -->
       <div class="flex justify-center lg:justify-end">
         <img
@@ -24,90 +21,124 @@
 
       <div class="flex flex-col justify-center space-y-5 max-w-md">
         <div>
-        <h1 class="font-Poppins mb-1 text-3xl font-bold">
-          {{ product()?.description | titlecase }}
-        </h1>
-        <p class="text-base font-bold text-base-content/70 leading-relaxed">
-          {{product()?.price |currency : 'COP' : 'symbol' : '1.0-0'}}
-        </p>
+          <h1 class="font-Poppins mb-1 text-3xl font-bold">
+            {{ product()?.description | titlecase }}
+          </h1>
+          <!--  -->
+          <div class="flex w-full flex-col lg:flex-row">
+            <div class="card bg-base-300 rounded-box grid grow place-items-center">
+              <small class="leading-relaxed">
+                Referencia <b>{{ product()?.reference }}</b>
+              </small>
+            </div>
+            <div class="divider lg:divider-horizontal"></div>
+            <div class="card bg-base-300 rounded-box grid grow place-items-center">
+              <small class="leading-relaxed">
+                Marca  <b>{{ product()?.brand | titlecase }}</b>
+              </small>
+            </div>
+          </div>
+          <!--  -->
         </div>
-        <p class="text-base text-base-content/70 leading-relaxed">
-          Referencia : <b>{{product()?.reference}}</b>
+        <p class="text-base font-bold text-base-content/70 leading-relaxed">
+          {{ product()?.price | currency : 'COP' : 'symbol' : '1.0-0' }}
         </p>
-        <p class="text-base text-base-content/70 leading-relaxed">
-          Marca : <b>{{product()?.brand|titlecase}}</b>
-        </p>
+        @if(filteredSameReference().length>0){
+        <div class="grid grid-cols-6 max-w-full">
+          @for (prod of filteredSameReference(); track $index) {
+          <a [routerLink]="['/products', prod.id]" queryParamsHandling="preserve">
+            <img
+              [src]="prod?.images?.at(0)"
+              alt="Producto"
+              class="object-cover rounded shadow w-15 h-15 transition-transform duration-200 ease-out hover:scale-110 shrink-0 cursor-pointer"
+            />
+          </a>
+          }
+        </div>
+        }
+        <!--
         <p class="text-base text-base-content/70 leading-relaxed">
           Categoría: <b>{{ product()?.category | titlecase }}</b>
-        </p>
-        <div >
-          <p class="text-base text-base-content/70 leading-relaxed mr-3">
-            Selecciona el Color
-          </p>
-          <div class="flex gap-2">
-          @for(color of product()?.color;let i=$index;track $index){
-          <div class="h-5 w-8 rounded border" [style.backgroundColor]="'#' + color"></div>
-          }
+        </p> -->
+        <div>
+          <p class="text-base text-base-content/70 leading-relaxed">Selecciona la talla</p>
+          <div class="flex gap-2 w-full">
+            @for(size of product()?.stock; track size){
+            <button
+              class="btn flex-1 rounded-lg border text-sm hover:bg-gray-100 transition"
+              [class.btn-dash]="size.count === 0"
+              [disabled]="size.count === 0"
+              (click)="selectedSize.set(size.size)"
+              [class.btn-primary]="selectedSize() === size.size"
+            >
+              {{ size.size | uppercase }}
+            </button>
+            }
+          </div>
+          <!--Información de envío  -->
+          <div class="mt-2">
+            <div class="collapse  collapse-arrow bg-base-100 border-base-300 rounded-none border-t border-b">
+              <input type="checkbox" />
+              <div class="collapse-title font-semibold flex gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7 20q-1.25 0-2.125-.875T4 17H2.725q-.425 0-.713-.288T1.725 16t.288-.712t.712-.288h2.05q.425-.475 1-.737T7 14t1.225.263t1 .737H13.4l2.1-9H5.75q-.425 0-.712-.288T4.75 5t.288-.712T5.75 4h11q.5 0 .8.375t.175.85L17.075 8H19q.475 0 .9.213t.7.587l1.875 2.475q.275.35.35.763t0 .837L22.15 16.2q-.075.35-.35.575t-.625.225H20q0 1.25-.875 2.125T17 20t-2.125-.875T14 17h-4q0 1.25-.875 2.125T7 20m8.925-7h4.825l.1-.525L19 10h-2.375zm-2.475 1.825l.163-.725q.162-.725.412-1.775q.075-.325.15-.6t.125-.55l.163-.725q.162-.725.412-1.775t.413-1.775l.162-.725L15.5 6l-2.1 9zm-11.7-1.5q-.425 0-.712-.287t-.288-.713t.288-.712t.712-.288h3.5q.425 0 .713.288t.287.712t-.288.713t-.712.287zm2-3.65q-.425 0-.712-.288t-.288-.712t.288-.712t.712-.288h4.5q.425 0 .713.288t.287.712t-.288.713t-.712.287zM7 18q.425 0 .713-.288T8 17t-.288-.712T7 16t-.712.288T6 17t.288.713T7 18m10 0q.425 0 .713-.288T18 17t-.288-.712T17 16t-.712.288T16 17t.288.713T17 18"/></svg>
+                <p class="text-base font-bold text-base-content/70 leading-relaxed">
+                  Información de envío*</p>
+              </div>
+              <div class="collapse-content text-sm ml-2">
+                Envío gratis por servientrega
+              </div>
+            </div>
+          </div>
+          <!-- Información de pago -->
+           <div class="mt-2">
+            <div class="collapse  collapse-arrow bg-base-100 border-base-300 rounded-none border-t border-b">
+              <input type="checkbox" />
+              <div class="collapse-title font-semibold flex gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                </svg>
+
+                <p class="text-base font-bold text-base-content/70 leading-relaxed">
+                  Información de pago*</p>
+              </div>
+              <div class="collapse-content text-sm ml-2">
+                Pago contraentrega, pagas cuando recibes el producto
+              </div>
+            </div>
           </div>
         </div>
-        <div>
-          <p class="text-base text-base-content/70 leading-relaxed">
-            Selecciona la talla
-          </p>
-          <div class="flex gap-2 w-full ">
-              @for(size of product()?.stock; track size){
-              <a class="btn flex-1 rounded-lg border text-sm hover:bg-gray-100 transition" [class.btn-dash]="size.count===0" >
-                {{ size.size }}
-              </a>
-              }
-            </div>
-          <div>
-        </div>
-        <p class="text-base font-bold text-base-content/70 leading-relaxed">
-          Envío*
-        </p>
-        <p class="text-base font-bold text-base-content/70 leading-relaxed">
-          Se realiza por transportadora, medio de pago contraentrega
-        </p></div>
         <div class="flex">
-          <button class="btn flex-1 h-14 mb-2 btn-primary w-fit rounded-[30px]">Agregar a la bolsa de compras</button>
+          <button class="btn flex-1 h-14 mb-2 btn-primary w-fit rounded-[30px]">
+            Agregar a la bolsa de compras
+          </button>
         </div>
       </div>
     </div>
   </div>
-}
+  }
 </div>
 <div class="container mx-auto px-4 mt-6">
-
   <!-- HEADER -->
   <div class="flex items-center justify-between my-2">
-    <h2 class="font-Poppins text-2xl">
-      Prendas similares
-    </h2>
+    <h2 class="font-Poppins text-2xl">Prendas similares</h2>
 
     <div class="flex gap-2">
-      <button
-        class="btn btn-md btn-circle"
-        (click)="carousel.scrollLeft()"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z"/></svg>
+      <button class="btn btn-md btn-circle" (click)="carousel.scrollLeft()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="currentColor" d="m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z" />
+        </svg>
       </button>
 
-      <button
-        class="btn btn-md btn-circle"
-        (click)="carousel.scrollRight()"
-      >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 12L8 7.4L9.4 6l6 6l-6 6L8 16.6z"/></svg>
+      <button class="btn btn-md btn-circle" (click)="carousel.scrollRight()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12.6 12L8 7.4L9.4 6l6 6l-6 6L8 16.6z" />
+        </svg>
       </button>
     </div>
   </div>
 
   <!-- CAROUSEL -->
-  <app-product-similar
-    #carousel
-    [products]="filteredProducts()">
-  </app-product-similar>
-
+  <app-product-similar #carousel [products]="filteredProducts()"> </app-product-similar>
 </div>
 <footer class="footer sm:footer-horizontal bg-base-200 text-base-content p-10">
   <aside>
@@ -118,9 +149,11 @@
       xmlns="http://www.w3.org/2000/svg"
       fill-rule="evenodd"
       clip-rule="evenodd"
-      class="fill-current">
+      class="fill-current"
+    >
       <path
-        d="M22.672 15.226l-2.432.811.841 2.515c.33 1.019-.209 2.127-1.23 2.456-1.15.325-2.148-.321-2.463-1.226l-.84-2.518-5.013 1.677.84 2.517c.391 1.203-.434 2.542-1.831 2.542-.88 0-1.601-.564-1.86-1.314l-.842-2.516-2.431.809c-1.135.328-2.145-.317-2.463-1.229-.329-1.018.211-2.127 1.231-2.456l2.432-.809-1.621-4.823-2.432.808c-1.355.384-2.558-.59-2.558-1.839 0-.817.509-1.582 1.327-1.846l2.433-.809-.842-2.515c-.33-1.02.211-2.129 1.232-2.458 1.02-.329 2.13.209 2.461 1.229l.842 2.515 5.011-1.677-.839-2.517c-.403-1.238.484-2.553 1.843-2.553.819 0 1.585.509 1.85 1.326l.841 2.517 2.431-.81c1.02-.33 2.131.211 2.461 1.229.332 1.018-.21 2.126-1.23 2.456l-2.433.809 1.622 4.823 2.433-.809c1.242-.401 2.557.484 2.557 1.838 0 .819-.51 1.583-1.328 1.847m-8.992-6.428l-5.01 1.675 1.619 4.828 5.011-1.674-1.62-4.829z"></path>
+        d="M22.672 15.226l-2.432.811.841 2.515c.33 1.019-.209 2.127-1.23 2.456-1.15.325-2.148-.321-2.463-1.226l-.84-2.518-5.013 1.677.84 2.517c.391 1.203-.434 2.542-1.831 2.542-.88 0-1.601-.564-1.86-1.314l-.842-2.516-2.431.809c-1.135.328-2.145-.317-2.463-1.229-.329-1.018.211-2.127 1.231-2.456l2.432-.809-1.621-4.823-2.432.808c-1.355.384-2.558-.59-2.558-1.839 0-.817.509-1.582 1.327-1.846l2.433-.809-.842-2.515c-.33-1.02.211-2.129 1.232-2.458 1.02-.329 2.13.209 2.461 1.229l.842 2.515 5.011-1.677-.839-2.517c-.403-1.238.484-2.553 1.843-2.553.819 0 1.585.509 1.85 1.326l.841 2.517 2.431-.81c1.02-.33 2.131.211 2.461 1.229.332 1.018-.21 2.126-1.23 2.456l-2.433.809 1.622 4.823 2.433-.809c1.242-.401 2.557.484 2.557 1.838 0 .819-.51 1.583-1.328 1.847m-8.992-6.428l-5.01 1.675 1.619 4.828 5.011-1.674-1.62-4.829z"
+      ></path>
     </svg>
     <p>
       ACME Industries Ltd.
@@ -149,5 +182,3 @@
     <a class="link link-hover">Cookie policy</a>
   </nav>
 </footer>
-
-

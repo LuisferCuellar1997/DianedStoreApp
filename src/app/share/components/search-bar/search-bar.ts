@@ -1,4 +1,4 @@
-import { Component, inject, output, Output } from '@angular/core';
+import { Component, inject, input, output, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 

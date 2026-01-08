@@ -27,4 +27,5 @@ export interface ProductFilters {
   category: string[];
   brand: string[];
   maxPrice: number | null;
+  description?:string[]|null;
 }

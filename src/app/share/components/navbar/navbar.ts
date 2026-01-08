@@ -13,12 +13,12 @@ export class Navbar {
   searchChange = output<string>();
   filtersChange = output<Partial<ProductFilters>>();
   showFilters=input<boolean>(true);
+  showSearchbar=input<boolean>(true);
   search(value:string){
     this.searchChange.emit(value);
   }
 
   onFiltersChange(filters: Partial<ProductFilters>) {
-    console.log('🟠 Navbar recibe filtros:', filters);
     this.filtersChange.emit(filters);
   }
  }
