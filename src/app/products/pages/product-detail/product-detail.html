@@ -1,4 +1,4 @@
-<div class="font-Poppins">
+<div class="">
   <app-navbar [showFilters]="false" [showSearchbar]="false" />
   <!-- <div class="flex justify-center ">Envíos gratis a todo el paíz</div> -->
   @if (loading()) {
@@ -6,11 +6,12 @@
   <app-skeleton [template]="'product-detail'"></app-skeleton>
 
   } @else{
-  <div class="container mx-auto px-4">
+  <div class="container mx-auto px-4 font-Poppins">
     <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-8 py-4">
       <!-- IMAGEN -->
       <div class="flex justify-center lg:justify-end">
         <img
+          loading="lazy"
           [src]="product()?.images?.at(0)"
           alt="Producto"
           class="w-full max-w-105 max-h-130 object-cover rounded-2xl shadow"
@@ -63,7 +64,7 @@
         <div>
           <p class="text-base text-base-content/70 leading-relaxed">Selecciona la talla</p>
           <div class="flex gap-2 w-full">
-            @for(size of product()?.stock; track size){
+            @for(size of product()?.stock; let i=$index; track size){
             <button
               class="btn flex-1 rounded-lg border text-sm hover:bg-gray-100 transition"
               [class.btn-dash]="size.count === 0"
@@ -108,7 +109,7 @@
           </div>
         </div>
         <div class="flex">
-          <button class="btn flex-1 h-14 mb-2 btn-primary w-fit rounded-[30px]">
+          <button class="btn flex-1 h-14 mb-2 btn-primary w-fit rounded-[30px]" (click)="addShoppingCar()" >
             Agregar a la bolsa de compras
           </button>
         </div>

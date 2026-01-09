@@ -13,6 +13,7 @@ import { ProductList } from '../product-list/product-list';
 import { Skeleton } from '../../../share/components/skeleton/skeleton';
 import { ScrollService } from '../../../share/components/services/scroll-service.service';
 import { ProductSimilar } from '../../components/product-similar/product-similar';
+import { ShoppingService } from '../../../shopping/services/shopping.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -24,9 +25,13 @@ export class ProductDetail {
   private route = inject(ActivatedRoute);
   private prodService = inject(ProductService);
   private filterService = inject(FilterService);
+  private shoppingService=inject(ShoppingService)
+
   selectedSize=signal<string|null>(null);
   loading = signal(true);
   prod = toSignal(this.prodService.getJeans(), { initialValue: [] as Jean[] });
+  productAdd=signal<boolean>(false);
+  buttonClicked=signal<boolean>(false);
 
   filters = signal<ProductFilters>({
     search: '',
@@ -71,6 +76,8 @@ export class ProductDetail {
 
   constructor() {
     effect(() => {
+      const firstResult=this.product()?.stock.find(x=>x.count>0)?.size;
+      this.selectedSize.set(firstResult!);
       const product = this.product();
 
       if (!product) return;
@@ -93,5 +100,15 @@ export class ProductDetail {
       this.loading.set(true);
       setTimeout(() => this.loading.set(false), 500);
     });
+  }
+
+  addShoppingCar() {
+    console.log(this.selectedSize())
+    this.buttonClicked.set(true)
+    if (this.selectedSize()){
+      this.shoppingService.addToCart(this.product()!,this.selectedSize()!)
+      this.shoppingService.showShopList();
+      this.productAdd.set(true);
+    }
   }
 }

@@ -1,3 +1,2 @@
 TODO:
-1. Hacer funcionar la pestaña del carrito (que se muestren los productos que se han agregado al carrito
-pero en el nav, sin crear otro componente aún)
+1. Revisar el subtotal del carrito de compras no actualiza al agregar otro artículo
