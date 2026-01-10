@@ -8,7 +8,12 @@ import { CurrencyPipe, TitleCasePipe } from '@angular/common';
   templateUrl: './shop-button.html',
 })
 export class ShopButton {
-  private shoppingService=inject(ShoppingService)
-  shoppingList=signal(this.shoppingService.shopList());
-  total=signal(this.shoppingService.total());
+  shoppingService=inject(ShoppingService)
+  total=computed(()=>{
+    let totalRes=0;
+    this.shoppingService.shopList().forEach(x=>{
+      totalRes+=x.product.price
+    });
+    return totalRes;
+  });
 }

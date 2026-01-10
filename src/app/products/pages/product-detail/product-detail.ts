@@ -107,7 +107,6 @@ export class ProductDetail {
     this.buttonClicked.set(true)
     if (this.selectedSize()){
       this.shoppingService.addToCart(this.product()!,this.selectedSize()!)
-      this.shoppingService.showShopList();
       this.productAdd.set(true);
     }
   }

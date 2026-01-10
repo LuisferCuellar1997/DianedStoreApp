@@ -10,21 +10,8 @@ export class ShoppingService {
 
   shopList=signal<Shop[]>([]);
 
-  total=signal(()=>{
-    let total=0;
-    this.shopList().forEach(x=>{
-      console.log(x.product.price)
-      total+=x.product.price
-    });
-    console.log(total)
-  });
-
-  showShopList(){
-    console.log(this.shopList());
-  }
-
   addToCart(product:Jean, size:string){
-    this.shopList().push({product:product,selectedSize:size});
+    this.shopList.update(prod=>[...prod,{product:product,selectedSize:size}])
     this.loadToLocalStorage()
   }
 

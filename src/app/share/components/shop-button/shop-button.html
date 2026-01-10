@@ -20,14 +20,14 @@
   </div>
   <div tabindex="0" class="card card-compact dropdown-content bg-base-100 z-1 mt-3 w-100 shadow">
     <div class="card-body">
-      <span class="text-lg font-bold">{{shoppingList().length}} Items</span>
+      <span class="text-lg font-bold">{{shoppingService.shopList().length}} Items</span>
       <div class="scroll max-h-100 overflow-y-scroll">
         <ul class="list bg-base-100 rounded-box shadow-md m-2 ">
-          @if(shoppingList().length>0){
+          @if(shoppingService.shopList().length>0){
             <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Productos que has añadido al carrito</li>
           }@else {<li class="p-4 pb-2 text-xs opacity-60 tracking-wide">No has añadido artículos aún</li>}
 
-          @for(prod of shoppingList(); let i=$index;track i){
+          @for(prod of shoppingService.shopList(); let i=$index;track i){
             <li class="list-row">
               <div>
                 <img

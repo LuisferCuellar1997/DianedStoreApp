@@ -7,7 +7,6 @@ export class FilterService {
 
   filterProducts(products:Jean[], filters:ProductFilters):Jean[]{
     filters.description=filters.description?.map(x=>x.toLowerCase());
-    console.log(filters.description)
     return products.filter(p => {
       if (filters.search) {
         const term = filters.search.toLowerCase();
