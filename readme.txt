@@ -1,2 +1,2 @@
 TODO:
-1. Revisar el subtotal del carrito de compras no actualiza al agregar otro artículo
+1. Diseñar la info de la compra del carrito

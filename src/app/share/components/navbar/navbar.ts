@@ -15,6 +15,7 @@ export class Navbar {
   filtersChange = output<Partial<ProductFilters>>();
   showFilters=input<boolean>(true);
   showSearchbar=input<boolean>(true);
+  showShoppingBag=input<boolean>(true);
   search(value:string){
     this.searchChange.emit(value);
   }

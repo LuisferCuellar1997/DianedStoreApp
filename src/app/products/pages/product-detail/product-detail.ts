@@ -32,6 +32,9 @@ export class ProductDetail {
   prod = toSignal(this.prodService.getJeans(), { initialValue: [] as Jean[] });
   productAdd=signal<boolean>(false);
   buttonClicked=signal<boolean>(false);
+  isLeaving = signal(false);
+  private toastTimeout: any;
+
 
   filters = signal<ProductFilters>({
     search: '',
@@ -82,7 +85,6 @@ export class ProductDetail {
 
       if (!product) return;
 
-      // 🔁 actualizar filtros dinámicamente
       this.filters.update((f) => ({
         ...f,
         category: [product.category],
@@ -93,21 +95,35 @@ export class ProductDetail {
         description:[product.description],
       }))
 
-      // ⬆️ scroll al inicio solo cuando cambia el producto
       window.scrollTo({ top: 0 });
 
-      // ⏳ skeleton
       this.loading.set(true);
       setTimeout(() => this.loading.set(false), 500);
     });
   }
 
   addShoppingCar() {
-    console.log(this.selectedSize())
     this.buttonClicked.set(true)
     if (this.selectedSize()){
       this.shoppingService.addToCart(this.product()!,this.selectedSize()!)
-      this.productAdd.set(true);
     }
+  }
+
+  triggerToast() {
+  this.buttonClicked.set(true);
+  this.isLeaving.set(false);
+
+  if (this.toastTimeout) {
+    clearTimeout(this.toastTimeout);
+  }
+
+  this.toastTimeout = setTimeout(() => {
+    this.isLeaving.set(true);
+
+    setTimeout(() => {
+      this.buttonClicked.set(false);
+      this.isLeaving.set(false);
+    }, 300); //
+  }, 1400); //
   }
 }

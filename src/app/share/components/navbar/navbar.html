@@ -19,6 +19,8 @@
       <app-search-bar (termino)="search($event)"/>
     }
     <!--  -->
-    <app-shop-button></app-shop-button>
+    @if(showShoppingBag()){
+       <app-shop-button></app-shop-button>
+    }
   </div>
 </div>

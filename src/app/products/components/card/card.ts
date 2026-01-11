@@ -9,7 +9,7 @@ import { ScrollService } from '../../../share/components/services/scroll-service
 
 @Component({
   selector: 'app-card',
-  imports: [RouterLink,CommonModule,TitleCasePipe, ShowGenderPIpe, ArrayPipe, CurrencyPipe],
+  imports: [RouterLink,CommonModule,TitleCasePipe, ShowGenderPIpe, CurrencyPipe],
   templateUrl: './card.html',
   standalone:true
 })
