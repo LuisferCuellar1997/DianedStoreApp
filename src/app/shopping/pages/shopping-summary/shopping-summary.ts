@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
+import { ShoppingService } from '../../services/shopping.service';
 
 @Component({
   selector: 'app-shopping-summary',
@@ -7,5 +8,8 @@ import { Component, input } from '@angular/core';
   templateUrl: './shopping-summary.html',
 })
 export class ShoppingSummary {
-  subtotal=input.required<number>();
+  private shoppingService=inject(ShoppingService);
+  subtotal=computed(()=>{
+    return this.shoppingService.shopList().reduce((acum,i)=>(acum+i.product.price),0);
+  })
 }

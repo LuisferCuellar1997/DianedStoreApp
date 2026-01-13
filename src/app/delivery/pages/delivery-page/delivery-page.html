@@ -1,0 +1,23 @@
+<app-navbar [showFilters]="false" [showSearchbar]="false" />
+<div class="mx-4 md:lg:xl:mx-14 mt-">
+  <a href="" class="flex items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+      <path fill="currentColor" d="m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z" />
+    </svg>
+    <span class="text text-lg">Volver</span></a
+  >
+</div>
+<div class="w-[80%] font-Poppins mx-auto mb-4 container grid grid-cols-3 items-center">
+  <div class="col-span-2 flex justify-center">
+    <h2 class="text text-2xl">Checkout</h2>
+  </div>
+</div>
+<div class="font-Poppins w-[80%] mx-auto grid grid-cols-3 container mt-4 gap-4">
+  <div class="col-span-2 ">
+    <app-personal-info-form class="mb-4"/>
+    <app-address-info/>
+  </div>
+  <div class="col-span-1">
+    <app-shopping-summary />
+  </div>
+</div>
