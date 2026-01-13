@@ -9,92 +9,72 @@
     >
   </div>
   <div class="flex-1">
+    <div
+      class="sticky top-0 z-40 bg-base-100/70 backdrop-blur-md sm:border-b border-base-content/10 shadow-sm"
+    >
+      <div class="max-w-5xl mx-auto px-4 py-3">
+        <h2 class="text-2xl font-bold text-center">Resumen de compra</h2>
+      </div>
+    </div>
     <div class="md:w-[70%] mx-auto grid grid-cols-1 md:grid-cols-3 font-Poppins h-full">
       <div class="col-span-2 flex flex-col h-full">
-        <div class="sticky top-0 z-40 bg-base-100/70 backdrop-blur-md sm:border-b border-base-content/10 shadow-sm">
-          <div class="max-w-5xl mx-auto px-4 py-3">
-            <h2 class="text-2xl font-bold text-center ">Resumen de compra</h2>
-          </div>
-        </div>
-          <div class="flex-1 overflow-y-auto px-4 py-4">
-            <div class="md:hidden flex flex-col gap-4">
-              @for (prod of shoppingList(); track prod.product.id + prod.selectedSize) {
-              <div class="w-full bg-base-100 rounded-2xl shadow-sm p-4 flex gap-4 items-start">
-                <!-- IMAGEN -->
-                <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0">
-                  <img
-                    [src]="prod.product.images.at(0)"
-                    [alt]="prod.product.description"
-                    class="w-full h-full object-cover"
-                  />
+        <div class="flex-1 overflow-y-auto px-4 py-4">
+          <div class="md:hidden flex flex-col gap-4">
+            @for (prod of shoppingList(); track prod.product.id + prod.selectedSize) {
+            <div class="w-full bg-base-100 rounded-2xl shadow-sm p-4 flex gap-4 items-start">
+              <!-- IMAGEN -->
+              <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0">
+                <img
+                  [src]="prod.product.images.at(0)"
+                  [alt]="prod.product.description"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+
+              <!-- CONTENIDO -->
+              <div class="flex-1 flex flex-col gap-2">
+                <!-- TÍTULO -->
+                <div>
+                  <p class="font-semibold leading-tight">
+                    {{ prod.product.description }}
+                  </p>
+                  <p class="text-sm text-base-content/60">
+                    {{ prod.product.brand }} · Ref {{ prod.product.reference }} · Talla
+                    {{ prod.selectedSize }}
+                  </p>
                 </div>
 
-                <!-- CONTENIDO -->
-                <div class="flex-1 flex flex-col gap-2">
-                  <!-- TÍTULO -->
-                  <div>
-                    <p class="font-semibold leading-tight">
-                      {{ prod.product.description }}
-                    </p>
-                    <p class="text-sm text-base-content/60">
-                      {{ prod.product.brand }} · Ref {{ prod.product.reference }} · Talla
-                      {{ prod.selectedSize }}
-                    </p>
-                  </div>
-
-                  <!-- CONTROLES -->
-                  <div class="flex items-center justify-between mt-1">
-                    <!-- CANTIDAD -->
-                    <div class="flex items-center gap-3">
-                      <button
-                        class="btn btn-circle btn-primary btn-sm"
-                        (click)="
-                          changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, -1)
-                        "
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-4"
-                        >
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
-                        </svg>
-                      </button>
-
-                      <span class="font-semibold text-lg">
-                        {{ prod.quantity }}
-                      </span>
-
-                      <button
-                        class="btn btn-circle btn-primary btn-sm"
-                        (click)="
-                          changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, 1)
-                        "
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-4"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M12 4.5v15m7.5-7.5h-15"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-
-                    <!-- DELETE -->
+                <!-- CONTROLES -->
+                <div class="flex items-center justify-between mt-1">
+                  <!-- CANTIDAD -->
+                  <div class="flex items-center gap-3">
                     <button
-                      class="btn btn-circle btn-sm btn-error"
-                      (click)="deleteProduct(prod.product.id, prod.selectedSize)"
+                      class="btn btn-circle btn-primary btn-sm"
+                      (click)="
+                        changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, -1)
+                      "
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="size-4"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                      </svg>
+                    </button>
+
+                    <span class="font-semibold text-lg">
+                      {{ prod.quantity }}
+                    </span>
+
+                    <button
+                      class="btn btn-circle btn-primary btn-sm"
+                      (click)="
+                        changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, 1)
+                      "
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -107,120 +87,89 @@
                         <path
                           stroke-linecap="round"
                           stroke-linejoin="round"
-                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                          d="M12 4.5v15m7.5-7.5h-15"
                         />
                       </svg>
                     </button>
                   </div>
 
-                  <!-- SUBTOTAL -->
-                  <div class="text-right font-bold text-lg">
-                    {{
-                      prod.quantity! * prod.product.price | currency : 'COP' : 'symbol' : '1.0-0'
-                    }}
-                  </div>
+                  <!-- DELETE -->
+                  <button
+                    class="btn btn-circle btn-sm btn-error"
+                    (click)="deleteProduct(prod.product.id, prod.selectedSize)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-4"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- SUBTOTAL -->
+                <div class="text-right font-bold text-lg">
+                  {{ prod.quantity! * prod.product.price | currency : 'COP' : 'symbol' : '1.0-0' }}
                 </div>
               </div>
-
-              }
             </div>
-            <!-- Desktop -->
-            <div class="hidden md:lg:block">
-              <table class="table w-full table-fixed">
-                <thead class="text text-xl block w-full">
-                  <tr class="table w-full table-fixed">
-                    <th class="w-[35%]">Producto</th>
-                    <th class="w-[10%]">Precio</th>
-                    <th class="w-[15%] text-center">Cantidad</th>
-                    <th class="w-[20%]">Subtotal</th>
-                    <th class="w-[10%]"></th>
-                  </tr>
-                </thead>
-                <tbody class="block max-h-150 overflow-y-auto">
-                  @for (prod of shoppingList(); let i= $index; track i) {
-                  <tr>
-                    <td>
-                      <div class="flex items-center gap-3">
-                        <div class="avatar">
-                          <div class="rounded-xl h-20 w-20">
-                            <img
-                              [src]="prod?.product?.images?.at(0)"
-                              [alt]="prod.product.category"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <div class="font-bold">{{ prod.product.description | titlecase }}</div>
-                          <div class="text-sm opacity-50">
-                            <b>{{ prod.product.brand | titlecase }}</b> - Ref
-                            <b>{{ prod.product.reference }}</b>
-                          </div>
-                          <div class="text-sm opacity-50">
-                            Talla <b>{{ prod.selectedSize | titlecase }}</b>
-                          </div>
+
+            }
+          </div>
+          <!-- Desktop -->
+          <div class="hidden md:lg:block">
+            <table class="table w-full table-fixed">
+              <thead class="text text-xl block w-full">
+                <tr class="table w-full table-fixed">
+                  <th class="w-[35%]">Producto</th>
+                  <th class="w-[10%]">Precio</th>
+                  <th class="w-[15%] text-center">Cantidad</th>
+                  <th class="w-[20%]">Subtotal</th>
+                  <th class="w-[10%]"></th>
+                </tr>
+              </thead>
+              <tbody class="block max-h-150 overflow-y-auto">
+                @for (prod of shoppingList(); let i= $index; track i) {
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="avatar">
+                        <div class="rounded-xl h-20 w-20">
+                          <img [src]="prod?.product?.images?.at(0)" [alt]="prod.product.category" />
                         </div>
                       </div>
-                    </td>
-                    <td>
-                      <p class="text-base font-bold text-base-content/70 leading-relaxed">
-                        {{ prod.product.price | currency : 'COP' : 'symbol' : '1.0-0' }}
-                      </p>
-                    </td>
-                    <td>
-                      <div class="flex justify-center items-center gap-4">
-                        <button
-                          class="btn btn-sm btn-primary btn-circle"
-                          (click)="
-                            changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, 1)
-                          "
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="size-6"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M12 4.5v15m7.5-7.5h-15"
-                            />
-                          </svg>
-                        </button>
-                        <span class="font-bold text text-xl">{{ prod.quantity }}</span>
-                        <button
-                          class="btn btn-sm btn-primary btn-circle"
-                          (click)="
-                            changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, -1)
-                          "
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="size-6"
-                          >
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
-                          </svg>
-                        </button>
+                      <div>
+                        <div class="font-bold">{{ prod.product.description | titlecase }}</div>
+                        <div class="text-sm opacity-50">
+                          <b>{{ prod.product.brand | titlecase }}</b> - Ref
+                          <b>{{ prod.product.reference }}</b>
+                        </div>
+                        <div class="text-sm opacity-50">
+                          Talla <b>{{ prod.selectedSize | titlecase }}</b>
+                        </div>
                       </div>
-                    </td>
-                    <td>
-                      <p class="text-base font-bold text-base-content/70 leading-relaxed">
-                        {{
-                          prod.quantity! * prod.product.price
-                            | currency : 'COP' : 'symbol' : '1.0-0'
-                        }}
-                      </p>
-                    </td>
-                    <th>
+                    </div>
+                  </td>
+                  <td>
+                    <p class="text-base font-bold text-base-content/70 leading-relaxed">
+                      {{ prod.product.price | currency : 'COP' : 'symbol' : '1.0-0' }}
+                    </p>
+                  </td>
+                  <td>
+                    <div class="flex justify-center items-center gap-4">
                       <button
-                        class="btn btn-circle btn-error btn-md"
-                        (click)="deleteProduct(prod.product.id, prod.selectedSize)"
+                        class="btn btn-sm btn-primary btn-circle"
+                        (click)="
+                          changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, 1)
+                        "
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -233,17 +182,67 @@
                           <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                            d="M12 4.5v15m7.5-7.5h-15"
                           />
                         </svg>
                       </button>
-                    </th>
-                  </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
+                      <span class="font-bold text text-xl">{{ prod.quantity }}</span>
+                      <button
+                        class="btn btn-sm btn-primary btn-circle"
+                        (click)="
+                          changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, -1)
+                        "
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-6"
+                        >
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                  <td>
+                    <p class="text-base font-bold text-base-content/70 leading-relaxed">
+                      {{
+                        prod.quantity! * prod.product.price | currency : 'COP' : 'symbol' : '1.0-0'
+                      }}
+                    </p>
+                  </td>
+                  <th>
+                    <button
+                      class="btn btn-circle btn-error btn-md"
+                      (click)="deleteProduct(prod.product.id, prod.selectedSize)"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="size-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                        />
+                      </svg>
+                    </button>
+                  </th>
+                </tr>
+                }
+              </tbody>
+            </table>
           </div>
+        </div>
+      </div>
+      <div>
+        <app-shopping-summary [subtotal]="subTotalCart()"/>
       </div>
     </div>
   </div>

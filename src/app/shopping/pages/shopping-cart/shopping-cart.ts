@@ -4,10 +4,11 @@ import { ShoppingService } from '../../services/shopping.service';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { Shop } from '../../interfaces/shop.interface';
 import { filter } from 'rxjs';
+import { ShoppingSummary } from '../shopping-summary/shopping-summary';
 
 @Component({
   selector: 'app-shopping-cart',
-  imports: [Navbar, TitleCasePipe, CurrencyPipe],
+  imports: [Navbar, TitleCasePipe, CurrencyPipe, ShoppingSummary],
   templateUrl: './shopping-cart.html',
 })
 export class ShoppingCart {
