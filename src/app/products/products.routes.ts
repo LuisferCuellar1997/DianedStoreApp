@@ -18,7 +18,7 @@ export const productsRoutes: Routes = [
     component:ShoppingCart
   },
   {
-    path:'delivery',
+    path:'checkout',
     component:DeliveryPage
   },
   {

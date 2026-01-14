@@ -30,31 +30,22 @@
   </div>
 
   <!-- RESUMEN -->
+   @let sub=subtotal();
   <div class="space-y-2 pt-2 border-t border-base-content/10">
     <div class="flex justify-between text-sm">
       <span>Subtotal</span>
-      <span>{{subtotal()|currency : 'COP' : 'symbol' : '1.0-0' }}</span>
+      <span>{{sub|currency : 'COP' : 'symbol' : '1.0-0' }}</span>
     </div>
 
     <div class="flex justify-between text-base font-bold">
       <span>Total</span>
-      <span>{{subtotal()|currency : 'COP' : 'symbol' : '1.0-0' }}</span>
+      <span>{{sub|currency : 'COP' : 'symbol' : '1.0-0' }}</span>
     </div>
   </div>
-
-  <!-- ENVÍO GRATIS -->
-  <div class="space-y-2">
-    <p class="text-sm font-semibold text-green-700">
-      Tienes envío Gratis en esta compra
-    </p>
-    <div class="w-full h-2 rounded-full bg-base-200 overflow-hidden">
-      <div class="h-full bg-green-600 w-full"></div>
-    </div>
-  </div>
-
   <!-- CTA -->
-  <button class="btn btn-primary w-full h-14 rounded-full text-base font-semibold">
-    Información de envío
-  </button>
-
+   @if(!hideButton()){
+    <button class="btn btn-primary w-full h-14 rounded-full text-base font-semibold" [routerLink]="['/checkout']">
+      Información de envío
+    </button>
+   }
 </div>

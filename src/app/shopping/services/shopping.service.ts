@@ -1,62 +1,120 @@
-import { computed, effect, Injectable, signal } from '@angular/core';
+import { Injectable, effect, signal, inject } from '@angular/core';
+import { forkJoin, map, of } from 'rxjs';
 import { Shop } from '../interfaces/shop.interface';
-import { Jean, Product } from '../../products/interfaces/product.interface';
+import { Jean } from '../../products/interfaces/product.interface';
+import { ProductService } from '../../products/services/products.service';
 
-@Injectable({providedIn: 'root'})
+type ShopPersisted = {
+  productId: string;
+  selectedSize: string;
+  quantity: number;
+};
+
+@Injectable({ providedIn: 'root' })
 export class ShoppingService {
+  private productService = inject(ProductService);
+
+  shopList = signal<Shop[]>([]);
+  private saveTimer: any = null;
+
   constructor() {
     this.loadFromLocalStorage();
-   }
 
-  shopList=signal<Shop[]>([]);
+    // Guarda automáticamente cuando cambie shopList (debounced)
+    effect(() => {
+      const list = this.shopList();
+      this.scheduleSave(list);
+    });
+  }
 
-  addToCart(product:Jean, size:string){
-    if(this.shopList().find(x=>x.product.id===product.id && x.selectedSize===size)){
-      console.log("Found");
-      this.shopList.update(prod=>prod.map(x=>x.product.id===product.id&&x.selectedSize===size?{...x,quantity:x.quantity!+1}:x))
-      console.log({shopList:this.shopList()})
-    }else{
-      const newProduct=this.mapToShop(product,size);
-      this.shopList.update(prod=>[...prod,newProduct]);
+  addToCart(product: Jean, size: string) {
+    this.shopList.update(list => {
+      const found = list.find(x => x.product.id === product.id && x.selectedSize === size);
+      if (found) {
+        return list.map(x =>
+          x.product.id === product.id && x.selectedSize === size
+            ? { ...x, quantity: (x.quantity ?? 1) + 1 }
+            : x
+        );
+      }
+      return [...list, this.mapToShop(product, size)];
+    });
+  }
+
+  changeQuantity(id: string, selectedSize: string, operation: number) {
+    this.shopList.update(list =>
+      list.map(item => {
+        if (item.product.id === id && item.selectedSize === selectedSize) {
+          const next = (item.quantity ?? 1) + operation;
+          return { ...item, quantity: Math.max(1, next) };
+        }
+        return item;
+      })
+    );
+  }
+
+  deleteProduct(id: string, selectedSize: string) {
+    this.shopList.update(list => list.filter(prod => !(prod.product.id === id && prod.selectedSize === selectedSize)));
+  }
+
+  // ---------- Persistencia optimizada ----------
+  private scheduleSave(list: Shop[]) {
+    if (this.saveTimer) clearTimeout(this.saveTimer);
+
+    this.saveTimer = setTimeout(() => {
+      const persisted: ShopPersisted[] = list.map(item => ({
+        productId: item.product.id,
+        selectedSize: item.selectedSize,
+        quantity: item.quantity ?? 1,
+      }));
+      localStorage.setItem('shopList', JSON.stringify(persisted));
+    }, 300);
+  }
+
+  private loadFromLocalStorage() {
+    const raw = localStorage.getItem('shopList');
+    if (!raw) return;
+
+    let persisted: ShopPersisted[];
+    try {
+      persisted = JSON.parse(raw) as ShopPersisted[];
+    } catch {
+      localStorage.removeItem('shopList');
+      return;
     }
-    this.loadToLocalStorage()
+
+    if (!persisted.length) return;
+
+    // Trae cada producto por id y reconstruye el Shop[]
+    forkJoin(
+      persisted.map(p =>
+        this.productService.getProductById(p.productId).pipe(
+          map(product => ({ p, product }))
+        )
+      )
+    ).subscribe(results => {
+      const rebuilt: Shop[] = results
+        .map(({ p, product }) => {
+          if (!product) return null; // producto borrado o inexistente
+          return {
+            product,
+            selectedSize: p.selectedSize,
+            quantity: p.quantity,
+            subtotal: product.price, // si no lo usas, puedes quitarlo del modelo
+          } as Shop;
+        })
+        .filter(Boolean) as Shop[];
+
+      this.shopList.set(rebuilt);
+    });
   }
 
-  //CARGAR LOCALSTORAGE
-  loadToLocalStorage(){
-    localStorage.setItem('shopList',JSON.stringify(this.shopList()))
-  }
-
-  loadFromLocalStorage(){
-    const stored=localStorage.getItem('shopList');
-    this.shopList.set(stored?JSON.parse(stored):[])
-  }
-
-  mapToShop(product:Jean, size:string):Shop{
+  private mapToShop(product: Jean, size: string): Shop {
     return {
       product,
-      selectedSize:size,
-      quantity:1,
-      subtotal:product.price
+      selectedSize: size,
+      quantity: 1,
+      subtotal: product.price,
     };
   }
-
-  changeQuantity(id:string,selectedSize:string,operation:number){
-      this.shopList.update(list=>
-        list.map(item=>{
-          console.log("Desde el servicio->",item.quantity)
-          if(item.quantity && item.product.id===id && item.selectedSize===selectedSize){
-            return {...item,quantity:item.quantity+operation}
-          }
-          return item;
-        })
-      );
-      this.loadToLocalStorage()
-  }
-
-  deleteProduct(id:string,selectedSize:string){
-    this.shopList.update(list=>list.filter(prod=>!(prod.product.id===id && prod.selectedSize===selectedSize)))
-    this.loadToLocalStorage()
-  }
-
 }

@@ -7,6 +7,5 @@ export interface Departamento {
 export interface City {
   id:                     number;
   name:                   string;
-  postalCode:             null | string;
-  departmentId:           number;
+  departmentId:           string;
 }

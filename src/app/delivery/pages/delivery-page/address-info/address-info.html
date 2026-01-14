@@ -1,142 +1,117 @@
-@if(this.addressInfoSent()){
+@if(!this.addresInfoDeployed()){
 
-    <div class="card bg-base-100  border rounded-xl">
-      <div class="card-body p-6">
-        <!-- Header -->
-        <div class="flex items-start justify-between">
-          <div class="grid grid-cols-[24px_1fr] gap-x-4 items-center">
-            <span class="text-2xl font-bold leading-none">1</span>
-            <h2 class="text-xl font-bold">Datos Personales</h2>
-          </div>
+<div class="card bg-base-100 border rounded-xl">
+  <div class="card-body p-6">
+    <!-- Header -->
+    <div class="flex items-start justify-between">
+      <div class="grid grid-cols-[24px_1fr] gap-x-4 items-center">
+        <span class="text-2xl font-bold leading-none">2</span>
+        <h2 class="text-xl font-bold">Envío</h2>
+      </div>
+      @if(this.addressInfoSent()){
+      <button
+        type="button"
+        class="link link-hover text-sm font-medium"
+        (click)="onEdit(false)"
+      >
+        Editar
+      </button>
+      }
+    </div>
 
-          <button type="button" class="link link-hover text-sm font-medium" (click)="this.addressInfoSent.set(false)">Editar</button>
-        </div>
+    @if(addressInfoSent()){
+    <!-- Content -->
+    <div class="mt-4 space-y-1 text-sm">
+      <p class="text-green-600">
+        {{ this.addressInfo.get('municipio')?.value }} - {{ departamentoName() }}
+      </p>
 
-        <!-- Content -->
-        <div class="mt-4 space-y-1 text-sm">
-          <p class="text-green-600"></p>
+      <p class="text-base-content/90">
+        {{ this.addressInfo.get('barrio')?.value }} - {{ this.addressInfo.get('calle')?.value }}
+      </p>
 
-          <p class="text-base-content/90"></p>
-
-          <p class="text-base-content/90"></p>
-        </div>
+      <p class="text-base-content/90">{{ this.addressInfo.get('complemento')?.value }}</p>
+    </div>
+    }
+  </div>
+</div>
+}@else{
+<form [formGroup]="addressInfo" (ngSubmit)="onSave()">
+  <div class="grid grid-cols-2 gap-x-2 border rounded-xl w-full col-span-2 py-6 px-5">
+    <div class="flex items-start justify-between">
+      <div class="grid grid-cols-[24px_1fr] gap-x-4 items-center mb-4">
+        <span class="text-2xl font-bold leading-none">2</span>
+        <h2 class="text-xl font-bold">Envío</h2>
       </div>
     </div>
-    }@else{
-    <form [formGroup]="addressInfo" (ngSubmit)="onSave()">
-      <div class="grid grid-cols-2 gap-x-2 border rounded-xl w-full col-span-2 py-6 px-5">
-        <div class="flex items-start justify-between">
-          <div class="grid grid-cols-[24px_1fr] gap-x-4 items-center">
-            <span class="text-2xl font-bold leading-none">1</span>
-            <h2 class="text-xl font-bold">Datos Personales</h2>
-            <span class="mt-5 mb-2 text col-span-2 text-sm">Información necesaria para realizar el envío</span>
+    <!-- Input para departamento -->
+    <div class="col-span-2">
+      <span class="text text-xs block text-gray-400">Departamento</span>
+      <select
+        formControlName="departamento"
+        class="select appearance-none form-control focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1"
+      >
+        <option value="" disabled>Selecciona un departamento</option>
+        @for(dept of departamentos(); track dept.id){
+        <option [value]="dept.id">{{ dept.name}}</option>
+        }
+      </select>
+    </div>
+    <!-- Input para municipio -->
+    <div class="col-span-2 mt-1">
+      <span class="text text-xs block text-gray-400">Municipio</span>
+      <select
+        formControlName="municipio"
+        class="select appearance-none focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1"
+      >
+        <option value="" disabled>Selecciona un municipio</option>
 
-          </div>
-        </div>
-        <!-- Input para correo -->
-        <div class="col-span-2">
-          <span class="text text-xs block text-gray-400">Correo</span>
-          <input
-            type="text"
-            class="input focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1 py-6"
-            placeholder="Correo Electrónico*"
-            formControlName="email"
-          />
-          @if(formUtils.isValidField('email')){
-          <span class="text text-xs block text-red-400">{{
-            formUtils.getFieldError('email', 'email')
-          }}</span>
-          }
-        </div>
-        <!-- Input para nombres y apellidos -->
-        <div class="col-span-1">
-          <div>
-            <span class="text text-xs text-gray-400">Nombres</span>
-            <input
-              type="text"
-              class="input focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1 py-6"
-              placeholder="Nombre*"
-              formControlName="firstName"
-            />
-            @if(formUtils.isValidField('firstName')){
-            <span class="text text-xs block text-red-400">{{
-              formUtils.getFieldError('firstName')
-            }}</span>
-            }
-          </div>
-        </div>
-        <!-- Apellidos -->
-        <div class="col-span-1">
-          <div>
-            <span class="text text-xs text-gray-400">Apellidos</span>
-            <input
-              type="text"
-              class="input focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1 py-6"
-              placeholder="Apellidos*"
-              formControlName="lastName"
-            />
-            @if(formUtils.isValidField('lastName')){
-            <span class="text text-xs block text-red-400">{{
-              formUtils.getFieldError('lastName')
-            }}</span>
-            }
-          </div>
-        </div>
-        <div class="col-span-1">
-          <div>
-            <span class="text text-xs text-gray-400">Tipo de documento</span>
-            <select
-              formControlName="docType"
-              class="select appearance-none h-12.5 focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1"
-            >
-              <option [ngValue]="null" disabled selected>Selecciona un tipo</option>
-            </select>
-            @if(formUtils.isValidField('docType')){
-            <span class="text text-xs block text-red-400">{{
-              formUtils.getFieldError('docType')
-            }}</span>
-            }
-          </div>
-        </div>
-        <div class="col-span-1">
-          <div>
-            <span class="text text-xs text-gray-400">Número de documento</span>
-            <input
-              type="text"
-              class="input focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1 py-6"
-              placeholder="Número de identificación*"
-              formControlName="nit"
-            />
-            @if(formUtils.isValidField('nit')){
-            <span class="text text-xs block text-red-400">{{
-              formUtils.getFieldError('nit', 'nit')
-            }}</span>
-            }
-          </div>
-        </div>
-        <div class="col-span-2">
-          <div>
-            <span class="text text-xs text-gray-400">Teléfono / movil</span>
-            <input
-              type="text"
-              class="input focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1 py-6"
-              placeholder="Número de celular*"
-              formControlName="phoneNumber"
-            />
-            @if(formUtils.isValidField('phoneNumber')){
-            <span class="text text-xs block text-red-400">{{
-              formUtils.getFieldError('phoneNumber', 'phoneNumber')
-            }}</span>
-            }
-          </div>
-        </div>
-        <div class="col-span-2">
-          <div class="flex justify-end">
-            <button type="submit" class="btn btn-success mt-4 w-50 items-center">
-              Guardar y continuar
-            </button>
-          </div>
-        </div>
+        @for(city of cities();track city.id){
+        <option [value]="city.name">{{ city.name}}</option>
+        }
+      </select>
+    </div>
+    <div class="col-span-2 mt-1">
+      <div>
+        <span class="text text-xs text-gray-400">Barrio</span>
+        <input
+          type="text"
+          class="input focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1"
+          placeholder="Opcional"
+          formControlName="barrio"
+        />
       </div>
-    </form>
-    }
+    </div>
+    <div class="col-span-2 mt-1">
+      <div>
+        <span class="text text-xs text-gray-400">Calle</span>
+        <input
+          type="text"
+          class="input focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1"
+          placeholder="Opcional"
+          formControlName="calle"
+        />
+      </div>
+    </div>
+    <div class="col-span-2 mt-1">
+      <div>
+        <span class="text text-xs text-gray-400">Información adicional</span>
+        <input
+          type="text"
+          class="input focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1"
+          placeholder="Dirección complementaria"
+          formControlName="complemento"
+        />
+      </div>
+    </div>
+    <!-- Input para nombres y apellidos -->
+    <div class="col-span-2">
+      <div class="flex justify-end">
+        <button type="submit" class="btn btn-success mt-4 w-50 items-center">
+          Guardar y continuar
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+}

@@ -12,12 +12,13 @@
     <h2 class="text text-2xl">Checkout</h2>
   </div>
 </div>
-<div class="font-Poppins w-[80%] mx-auto grid grid-cols-3 container mt-4 gap-4">
-  <div class="col-span-2 ">
-    <app-personal-info-form class="mb-4"/>
+<div class="font-Poppins w-[80%] mx-auto grid grid-cols-3 container my-4 gap-4">
+  <div class="col-span-2 grid auto-rows-min gap-4">
+    <app-personal-info-form/>
     <app-address-info/>
   </div>
   <div class="col-span-1">
-    <app-shopping-summary />
+    <span class="hidden">{{ shopCount() }}</span>
+    <app-shopping-summary [hideButton]="true"/>
   </div>
 </div>
