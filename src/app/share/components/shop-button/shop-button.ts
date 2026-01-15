@@ -12,10 +12,9 @@ export class ShopButton {
   shoppingService=inject(ShoppingService)
   shoppingList=this.shoppingService.shopList;
   total=computed(()=>{
-    let totalRes=0;
-    this.shoppingList().forEach(x=>{
-      totalRes+=x.product.price
-    });
-    return totalRes;
-  });
+    return this.shoppingList().reduce(
+      (acum, item) => acum + item.product.price * (item.quantity ?? 1),
+      0
+    )
+  })
 }

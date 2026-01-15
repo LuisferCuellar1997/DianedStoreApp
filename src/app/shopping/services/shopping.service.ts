@@ -16,6 +16,7 @@ export class ShoppingService {
 
   shopList = signal<Shop[]>([]);
   private saveTimer: any = null;
+  showToPay=signal(false);
 
   constructor() {
     this.loadFromLocalStorage();
@@ -85,7 +86,6 @@ export class ShoppingService {
 
     if (!persisted.length) return;
 
-    // Trae cada producto por id y reconstruye el Shop[]
     forkJoin(
       persisted.map(p =>
         this.productService.getProductById(p.productId).pipe(

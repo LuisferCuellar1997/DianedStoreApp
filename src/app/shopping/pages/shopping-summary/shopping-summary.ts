@@ -11,8 +11,14 @@ import { RouterLink } from "@angular/router";
 })
 export class ShoppingSummary {
 
+  constructor(){
+    this.shoppingService.showToPay.set(false)
+  }
+
   private shoppingService=inject(ShoppingService);
   hideButton=input<boolean>(false)
+  shopList=this.shoppingService.shopList;
+  showProdToPay=input<boolean>(false);
   subtotal=computed(()=>{
     return this.shoppingService.shopList().reduce(
       (acum, item) => acum + item.product.price * (item.quantity ?? 1),

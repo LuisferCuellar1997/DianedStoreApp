@@ -6,7 +6,6 @@ import { filter } from 'rxjs';
 export class FilterService {
 
   filterProducts(products:Jean[], filters:ProductFilters):Jean[]{
-    filters.description=filters.description?.map(x=>x.toLowerCase());
     return products.filter(p => {
       if (filters.search) {
         const term = filters.search.toLowerCase();
@@ -20,7 +19,6 @@ export class FilterService {
       if (filters.category.length && !filters.category.includes(p.category)) return false;
       if (filters.brand.length && !filters.brand.includes(p.brand)) return false;
       if (filters.maxPrice !== null && p.price > filters.maxPrice) return false;
-      if (filters.description && !filters.description.includes(p.description.toLowerCase())) return false;
       return true;
     });
   }

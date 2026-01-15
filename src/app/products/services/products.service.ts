@@ -1,19 +1,22 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, doc,docData,collectionData, collection } from '@angular/fire/firestore';
-import { Observable, of } from 'rxjs';
+import { Firestore, doc, docData, collectionData, collection } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Jean } from '../interfaces/product.interface';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class ProductService {
-  private firestore=inject(Firestore)
+  private firestore = inject(Firestore);
 
-  getJeans():Observable<Jean[]>{
-    const prodsRef=collection(this.firestore,'products');
-    return collectionData(prodsRef,{idField:'id'}) as Observable<Jean[]>;
+  getJeans(): Observable<Jean[]> {
+    const prodsRef = collection(this.firestore, 'products');
+    return collectionData(prodsRef, { idField: 'id' }) as Observable<Jean[]>;
   }
 
- getProductById(id: string): Observable<Jean | null> {
+  getProductById(id: string): Observable<Jean | null> {
     const ref = doc(this.firestore, `products/${id}`);
-    return docData(ref, { idField: 'id' }) as Observable<Jean | null>;
+    return (docData(ref, { idField: 'id' }) as Observable<Jean | null>).pipe(
+      take(1)
+    );
   }
 }

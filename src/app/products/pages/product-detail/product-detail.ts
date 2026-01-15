@@ -65,7 +65,7 @@ export class ProductDetail {
   filteredSameReference=computed(()=>{
     const current=this.product();
     if(!current)return[];
-    return this.filterService.filterProducts(this.prod(),this.filtersSameRef()).filter((p)=>p.reference!==current.reference)
+    return this.filterService.filterProducts(this.prod(),this.filtersSameRef()).filter((p)=>p.description===current.description)
   })
 
   productId = this.route.snapshot.paramMap.get('id');

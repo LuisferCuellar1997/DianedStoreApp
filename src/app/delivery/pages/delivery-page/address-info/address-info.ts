@@ -5,13 +5,25 @@ import { FormUtils } from '../../../../utils/form-utils';
 import { TitleCasePipe } from '@angular/common';
 import { distinctUntilChanged, filter, switchMap, tap } from 'rxjs';
 import { City } from '../../../interfaces/cities.interface';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-address-info',
-  imports: [ReactiveFormsModule, TitleCasePipe],
+  imports: [ReactiveFormsModule],
   templateUrl: './address-info.html',
 })
 export class AddressInfo {
+
+  constructor(){
+    effect(()=>{
+      if(this.addressStatus()==='VALID'){
+        this.citiesService.formAddressValid.set(true);
+      }else{
+        this.citiesService.formAddressValid.set(false);
+      }
+    })
+  }
+
   private fb = inject(FormBuilder);
   private citiesService = inject(DeliveryService);
 
@@ -35,6 +47,7 @@ export class AddressInfo {
     phoneNumber: [''],
   });
 
+  addressStatus=toSignal(this.addressInfo.statusChanges,{initialValue:this.addressInfo.status})
   formUtils = new FormUtils(this.addressInfo);
 
   onFormChanged = effect((onCleanup) => {
@@ -72,4 +85,6 @@ export class AddressInfo {
     this.citiesService.setPersonalInfoDeployed(false);
     this.citiesService.setAddressInfoDeployed(true);
   }
+
+
 }

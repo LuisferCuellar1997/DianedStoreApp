@@ -7,9 +7,10 @@ import { finalize, map, Observable, of, shareReplay, switchMap, tap } from 'rxjs
 export class DeliveryService {
   constructor() {
     this.getDepartamentos();
-    effect(() => {
-      console.log('PersonalInfoDeployed-servicio->', this.personalInfoDeployed());
-    });
+    effect(()=>{
+      console.log("personal info form-> ",this.formPersInfoValid());
+      console.log("personal address form-> ",this.formAddressValid());
+    })
   }
 
   /* CONFIGURACION DE CACHE */
@@ -28,20 +29,17 @@ export class DeliveryService {
   personalInfoDeployed = signal(true);
   addressInfoDeployed = signal(false);
   finishForms = signal(false);
+  formAddressValid=signal(false);
+  formPersInfoValid=signal(false);
 
   setPersonalInfoDeployed(change: boolean) {
-    console.log('xxxx');
     this.personalInfoDeployed.set(change);
-    console.log('Nuevo valor->', this.personalInfoDeployed());
   }
   setAddressInfoDeployed(change: boolean) {
-    console.log('xxxx');
     this.addressInfoDeployed.set(change);
-    console.log('Nuevo valor->', this.personalInfoDeployed());
   }
 
   saveNext() {
-    console.log('save next');
     this.personalInfoDeployed.set(false);
     this.addressInfoDeployed.set(false);
     this.finishForms.set(true);

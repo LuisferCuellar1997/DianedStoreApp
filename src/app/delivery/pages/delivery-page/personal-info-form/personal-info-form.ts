@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormUtils } from '../../../../utils/form-utils';
 import { DeliveryService } from '../../../services/delivery.service';
@@ -6,6 +6,7 @@ import { TitleCasePipe } from '@angular/common';
 import { PhoneSpacesPipe } from '../../../../products/pipes/phone-pipe.pipe';
 import { Navbar } from '../../../../share/components/navbar/navbar';
 import { ShoppingSummary } from '../../../../shopping/pages/shopping-summary/shopping-summary';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export const document_types = [
   'Cédula de ciudadanía',
@@ -23,6 +24,17 @@ const EMAIL_REGEX =
   templateUrl: './personal-info-form.html',
 })
 export class PersonalInfoForm {
+
+  constructor(){
+    effect(()=>{
+      if(this.personalInfoStatus()==='VALID'){
+        this.citiesService.formPersInfoValid.set(true);
+      }else{
+        this.citiesService.formPersInfoValid.set(false);
+      }
+    })
+  }
+
   private fb = inject(FormBuilder);
   private citiesService = inject(DeliveryService);
   persInfoSent = signal(false);
@@ -48,6 +60,8 @@ export class PersonalInfoForm {
     nit: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/^\d+$/)]],
     phoneNumber: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/^\d+$/)]],
   });
+
+  personalInfoStatus=toSignal(this.personalInfoForm.statusChanges,{initialValue:this.personalInfoForm.status})
 
   formUtils = new FormUtils(this.personalInfoForm);
 

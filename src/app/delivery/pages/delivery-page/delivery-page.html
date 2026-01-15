@@ -19,6 +19,9 @@
   </div>
   <div class="col-span-1">
     <span class="hidden">{{ shopCount() }}</span>
-    <app-shopping-summary [hideButton]="true"/>
+    <app-shopping-summary [hideButton]="true" [showProdToPay]="true"/>
+    <button (click)="submitStore()" [class.btn-disabled]="!this.deliveryService.formAddressValid()||!this.deliveryService.formPersInfoValid()" class="btn btn-success btn-lg w-full mt-4">
+      Confirmar compra
+    </button>
   </div>
 </div>

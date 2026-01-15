@@ -8,6 +8,7 @@
       <span class="text text-lg">Volver</span></a
     >
   </div>
+  @if(this.shoppingList().length>0){
   <div class="flex-1">
     <div
       class="sticky top-0 z-40 bg-base-100/70 backdrop-blur-md sm:border-b border-base-content/10 shadow-sm"
@@ -246,4 +247,9 @@
       </div>
     </div>
   </div>
+}@else {
+  <div class="flex justify-center">
+    <h2 class="text text-xl font-Poppins">No has agregado productos a tu carrito</h2>
+  </div>
+}
 </div>
