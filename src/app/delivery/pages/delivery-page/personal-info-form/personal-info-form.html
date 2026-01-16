@@ -17,10 +17,10 @@
     @if(this.persInfoSent()){
     <!-- Content -->
     <div class="mt-4 space-y-1 text-sm">
-      <p class="text-green-600">{{ email() }}</p>
+      <p class="text-green-600">{{ customer().email }}</p>
 
-      <p class="text-base-content/90">{{ fullName() | titlecase }}</p>
-      <p class="text-base-content/90">{{ phone() | phoneSpaces }}</p>
+      <p class="text-base-content/90">{{ customer().firstName}} {{customer().lastName}}</p>
+      <p class="text-base-content/90">{{ customer().phoneNumber | phoneSpaces }}</p>
     </div>
     }
   </div>

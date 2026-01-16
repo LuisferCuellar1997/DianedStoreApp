@@ -1,5 +1,5 @@
 export interface Departamento {
-  id:                     number;
+  id:                     string;
   name:                   string;
 }
 

@@ -15,5 +15,4 @@ export class OrderService {
       createdAt:serverTimestamp(),
     });
   }
-
 }

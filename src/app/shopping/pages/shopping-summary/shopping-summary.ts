@@ -20,9 +20,6 @@ export class ShoppingSummary {
   shopList=this.shoppingService.shopList;
   showProdToPay=input<boolean>(false);
   subtotal=computed(()=>{
-    return this.shoppingService.shopList().reduce(
-      (acum, item) => acum + item.product.price * (item.quantity ?? 1),
-      0
-    )
+    return this.shoppingService.subtotal();
   })
 }

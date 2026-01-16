@@ -1,4 +1,4 @@
-import { Injectable, effect, signal, inject } from '@angular/core';
+import { Injectable, effect, signal, inject, computed } from '@angular/core';
 import { forkJoin, map, of } from 'rxjs';
 import { Shop } from '../interfaces/shop.interface';
 import { Jean } from '../../products/interfaces/product.interface';
@@ -16,8 +16,13 @@ export class ShoppingService {
 
   shopList = signal<Shop[]>([]);
   private saveTimer: any = null;
-  showToPay=signal(false);
-
+  showToPay = signal(false);
+  subtotal = computed(() => {
+    return this
+      .shopList()
+      .reduce((acum, item) => acum + item.product.price * (item.quantity ?? 1), 0);
+  });
+  finalTotal=signal(0);
   constructor() {
     this.loadFromLocalStorage();
 
@@ -29,10 +34,10 @@ export class ShoppingService {
   }
 
   addToCart(product: Jean, size: string) {
-    this.shopList.update(list => {
-      const found = list.find(x => x.product.id === product.id && x.selectedSize === size);
+    this.shopList.update((list) => {
+      const found = list.find((x) => x.product.id === product.id && x.selectedSize === size);
       if (found) {
-        return list.map(x =>
+        return list.map((x) =>
           x.product.id === product.id && x.selectedSize === size
             ? { ...x, quantity: (x.quantity ?? 1) + 1 }
             : x
@@ -43,8 +48,8 @@ export class ShoppingService {
   }
 
   changeQuantity(id: string, selectedSize: string, operation: number) {
-    this.shopList.update(list =>
-      list.map(item => {
+    this.shopList.update((list) =>
+      list.map((item) => {
         if (item.product.id === id && item.selectedSize === selectedSize) {
           const next = (item.quantity ?? 1) + operation;
           return { ...item, quantity: Math.max(1, next) };
@@ -55,7 +60,9 @@ export class ShoppingService {
   }
 
   deleteProduct(id: string, selectedSize: string) {
-    this.shopList.update(list => list.filter(prod => !(prod.product.id === id && prod.selectedSize === selectedSize)));
+    this.shopList.update((list) =>
+      list.filter((prod) => !(prod.product.id === id && prod.selectedSize === selectedSize))
+    );
   }
 
   // ---------- Persistencia optimizada ----------
@@ -63,7 +70,7 @@ export class ShoppingService {
     if (this.saveTimer) clearTimeout(this.saveTimer);
 
     this.saveTimer = setTimeout(() => {
-      const persisted: ShopPersisted[] = list.map(item => ({
+      const persisted: ShopPersisted[] = list.map((item) => ({
         productId: item.product.id,
         selectedSize: item.selectedSize,
         quantity: item.quantity ?? 1,
@@ -87,12 +94,10 @@ export class ShoppingService {
     if (!persisted.length) return;
 
     forkJoin(
-      persisted.map(p =>
-        this.productService.getProductById(p.productId).pipe(
-          map(product => ({ p, product }))
-        )
+      persisted.map((p) =>
+        this.productService.getProductById(p.productId).pipe(map((product) => ({ p, product })))
       )
-    ).subscribe(results => {
+    ).subscribe((results) => {
       const rebuilt: Shop[] = results
         .map(({ p, product }) => {
           if (!product) return null; // producto borrado o inexistente
@@ -116,5 +121,10 @@ export class ShoppingService {
       quantity: 1,
       subtotal: product.price,
     };
+  }
+
+  cleanShoppingList(){
+    this.finalTotal.set(this.subtotal())
+    this.shopList.set([])
   }
 }

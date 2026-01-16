@@ -7,6 +7,8 @@ import { PhoneSpacesPipe } from '../../../../products/pipes/phone-pipe.pipe';
 import { Navbar } from '../../../../share/components/navbar/navbar';
 import { ShoppingSummary } from '../../../../shopping/pages/shopping-summary/shopping-summary';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Customer } from '../../../../orders/interfaces/order.interface';
+import { zip } from 'rxjs';
 
 export const document_types = [
   'Cédula de ciudadanía',
@@ -24,15 +26,24 @@ const EMAIL_REGEX =
   templateUrl: './personal-info-form.html',
 })
 export class PersonalInfoForm {
+  constructor() {
+    effect(() => {
+      const customer = this.citiesService.personalInfoFormFilled();
+      if (!customer) return;
 
-  constructor(){
-    effect(()=>{
-      if(this.personalInfoStatus()==='VALID'){
-        this.citiesService.formPersInfoValid.set(true);
-      }else{
-        this.citiesService.formPersInfoValid.set(false);
-      }
-    })
+      this.personalInfoForm.patchValue(
+        {
+          email: customer.email,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          docType: customer.tipDoc,
+          nit: customer.numDoc,
+          phoneNumber: customer.phoneNumber,
+        },
+        { emitEvent: false }
+      );
+      this.personalInfoForm.updateValueAndValidity({ emitEvent: true });
+    });
   }
 
   private fb = inject(FormBuilder);
@@ -49,6 +60,7 @@ export class PersonalInfoForm {
     const last = this.personalInfoForm.get('lastName')?.value ?? '';
     return `${first} ${last}`.trim();
   });
+  customer = this.citiesService.personalInfoFormFilled;
 
   phone = computed(() => this.personalInfoForm.get('phoneNumber')?.value ?? '');
   email = computed(() => this.personalInfoForm.get('email')?.value ?? '');
@@ -58,25 +70,60 @@ export class PersonalInfoForm {
     lastName: ['', [Validators.minLength(3), Validators.required]],
     docType: this.fb.control<DocumentType | null>(null, { validators: Validators.required }),
     nit: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/^\d+$/)]],
-    phoneNumber: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/^\d+$/)]],
+    phoneNumber: ['', [Validators.minLength(3), Validators.required]],
   });
 
-  personalInfoStatus=toSignal(this.personalInfoForm.statusChanges,{initialValue:this.personalInfoForm.status})
+  personalInfoStatus = toSignal(this.personalInfoForm.statusChanges, {
+    initialValue: this.personalInfoForm.status,
+  });
 
   formUtils = new FormUtils(this.personalInfoForm);
 
+  personalInfoValue = toSignal(this.personalInfoForm.valueChanges, {
+    initialValue: this.personalInfoForm.getRawValue(),
+  });
+  personalInfoFilled = computed<Customer>(() => {
+    const values = this.personalInfoValue();
+    return {
+      email: values.email ?? '',
+      firstName: values.firstName ?? '',
+      lastName: values.lastName ?? '',
+      tipDoc: values.docType ?? null,
+      numDoc: values.nit ?? '',
+      phoneNumber: values.phoneNumber ?? '',
+    };
+  });
+
   onSave() {
-    console.log('Clic onSave');
     if (this.personalInfoForm.invalid) {
       this.personalInfoForm.markAllAsTouched();
       return;
     }
+
+    const raw = this.personalInfoForm.getRawValue();
+
+    this.citiesService.personalInfoFormFilled.set({
+      email: raw.email ?? '',
+      firstName: raw.firstName ?? '',
+      lastName: raw.lastName ?? '',
+      tipDoc: raw.docType ?? null,
+      numDoc: raw.nit ?? '',
+      phoneNumber: raw.phoneNumber ?? '',
+    });
+
+    this.citiesService.writePersonalInfo();
+
+    // ✅ AQUÍ está la clave
+    this.citiesService.setPersonalInfoValidity(true);
+
     this.persInfoSent.set(true);
     this.onEdit(true);
   }
 
   onEdit(state: boolean) {
-    console.log('Ingresa');
+
+    this.citiesService.setAddressValidity(false);
+
     this.citiesService.setAddressInfoDeployed(state);
     this.citiesService.finishForms.set(false);
   }

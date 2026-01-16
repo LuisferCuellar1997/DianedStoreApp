@@ -9,11 +9,7 @@
         <h2 class="text-xl font-bold">Envío</h2>
       </div>
       @if(this.addressInfoSent()){
-      <button
-        type="button"
-        class="link link-hover text-sm font-medium"
-        (click)="onEdit(false)"
-      >
+      <button type="button" class="link link-hover text-sm font-medium" (click)="onEdit(false)">
         Editar
       </button>
       }
@@ -51,11 +47,16 @@
         formControlName="departamento"
         class="select appearance-none form-control focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1"
       >
-        <option value="" disabled>Selecciona un departamento</option>
+        <option [ngValue]="null" disabled>Selecciona un departamento</option>
         @for(dept of departamentos(); track dept.id){
-        <option [value]="dept.id">{{ dept.name}}</option>
+        <option [value]="dept.id">{{ dept.name }}</option>
         }
       </select>
+      @if(formUtils.isValidField('departamento')){
+      <span class="text text-xs block text-red-400">{{
+        formUtils.getFieldError('departamento', 'departamento')
+      }}</span>
+      }
     </div>
     <!-- Input para municipio -->
     <div class="col-span-2 mt-1">
@@ -67,9 +68,14 @@
         <option value="" disabled>Selecciona un municipio</option>
 
         @for(city of cities();track city.id){
-        <option [value]="city.name">{{ city.name}}</option>
+        <option [value]="city.name">{{ city.name }}</option>
         }
       </select>
+      @if(formUtils.isValidField('municipio')){
+      <span class="text text-xs block text-red-400">{{
+        formUtils.getFieldError('municipio', 'municipio')
+      }}</span>
+      }
     </div>
     <div class="col-span-2 mt-1">
       <div>
