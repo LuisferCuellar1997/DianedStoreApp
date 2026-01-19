@@ -11,7 +11,7 @@ export class OrderService {
     const ref=collection(this.firestore,'orders');
     return addDoc(ref,{
       ...order,
-      status:'pending',
+      status:'Pendiente',
       createdAt:serverTimestamp(),
     });
   }

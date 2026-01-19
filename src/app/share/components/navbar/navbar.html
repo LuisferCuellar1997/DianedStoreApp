@@ -1,26 +1,42 @@
-<div class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
+<div class="navbar md:px-6 bg-base-100 shadow-sm sticky top-0 z-50">
   <div class="navbar-start">
     <div class="dropdown">
       <!--  -->
-      @if(showFilters()){
-        <app-right-navbar
-          (filtersChange)="onFiltersChange($event)">
-        </app-right-navbar>
-      <!--  -->
+      @if (showFilters()) {
+        <app-right-navbar (filtersChange)="onFiltersChange($event)"> </app-right-navbar>
+        <!--  -->
       }
     </div>
   </div>
   <div class="navbar-center">
     <a class="btn btn-ghost text-2xl font-Dancing font-black" href="#">Dianed Store</a>
   </div>
-  <div class="navbar-end lg:xl:flex lg:xl:gap-5">
+  <div class="navbar-end lg:xl:flex lg:xl:gap-5 gap-2">
     <!--  -->
-    @if(showSearchbar()){
-      <app-search-bar (termino)="search($event)"/>
+    @if (showSearchbar()) {
+      <app-search-bar (termino)="search($event)" />
     }
     <!--  -->
-    @if(showShoppingBag()){
-       <app-shop-button></app-shop-button>
+    @if (showShoppingBag()) {
+      <app-shop-button></app-shop-button>
+    }
+    @if (showProfile()) {
+      <button [routerLink]="['/my-shops']" class="btn btn-ghost btn-circle">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+          />
+        </svg>
+      </button>
     }
   </div>
 </div>

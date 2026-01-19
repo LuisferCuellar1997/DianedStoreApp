@@ -4,5 +4,6 @@ export interface Shop{
   product:Product,
   selectedSize:string,
   quantity?:number,
-  subtotal:number
+  subtotal:number,
+  createdAt?:Date
 }

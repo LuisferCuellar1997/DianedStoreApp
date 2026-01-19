@@ -1,0 +1,127 @@
+<app-navbar [showProfile]="false" />
+
+<!-- Filters and summary -->
+<section class="w-full bg-gray-100 px-6 py-6">
+  <div class="mx-auto max-w-6xl">
+    <h1 class="text-xl font-semibold text-gray-900">Compras</h1>
+
+    <div class="mt-5 flex flex-wrap items-center gap-4">
+      <!-- Search -->
+      <div class="relative">
+        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
+          <svg
+            viewBox="0 0 24 24"
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-4.3-4.3m1.8-5.2a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </span>
+
+        <input
+          type="text"
+          placeholder="Busca por compra, marca y más..."
+          class="h-10 w-85 max-w-full rounded-full border border-gray-300 bg-white pl-10 pr-4 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-200"
+        />
+      </div>
+
+      <!-- Filters -->
+      <div class="flex items-center gap-6">
+        <button class="inline-flex items-center gap-2 text-sm text-gray-800 hover:text-gray-900">
+          <span>Categoría</span>
+          <svg
+            viewBox="0 0 24 24"
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+
+        <button class="inline-flex items-center gap-2 text-sm text-gray-800 hover:text-gray-900">
+          <span>Fecha</span>
+          <svg
+            viewBox="0 0 24 24"
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+
+        <span class="mx-2 h-5 w-px bg-gray-300"></span>
+
+        <span class="text-sm text-gray-900">38 compras</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTOS INFORMATION -->
+<section class="w-full bg-gray-100 py-4">
+  @for (shop of shopsGroupedByDate(); track shop.date) {
+    <div class="mx-auto max-w-6xl mb-6 overflow-hidden rounded-2xl bg-white border border-gray-200">
+      <!-- Header -->
+      <div class="px-6 py-3 border-b border-gray-300">
+        <h2>
+          {{ shop.date | date: "d 'de' MMMM 'de' y" : undefined : 'es-CO' }}
+        </h2>
+      </div>
+
+      <!-- Productos -->
+      @for (order of shop.orders; track order) {
+        @for (prod of order.items; track prod) {
+          <div class="grid grid-cols-9 gap-1 px-6 py-6 border-b border-gray-200 last:border-b-0">
+            <div class="col-span-1">
+              <img
+                class="rounded-md max-h-25 object-cover"
+                [src]="prod.product.images.at(0)"
+                alt="Avatar"
+              /><!-- Mejorar imagen -->
+            </div>
+
+            <div class="col-span-4 flex flex-col">
+              <h3 class="text-green-600">{{ order.status }}</h3>
+              @if (order.status === 'pending' || order.status === 'pendiente') {
+                <p>La compra está siendo procesada</p>
+              } @else if (order.status === 'enviado') {
+                <p>Su producto fue enviado, N° Guía: asfsa12342as</p>
+                <!-- Insertar n° guía -->
+              } @else if (order.status === 'entregado') {
+                <p>Su producto fue entregado el 22 de enero de 2025</p>
+              }
+              <p class="mt-2 text-gray-400">{{ prod.product.description }}-{{prod.quantity}}</p>
+            </div>
+
+            <div class="col-span-2">
+              <p>Número de gúia</p>
+              <!-- INSERTAMOS EL NÚMERO DE GÚIA O ALGO MAS AQUÍ -->
+              <button
+                class="btn mt-2 text-green-600 border-green-600 hover:bg-green-600 hover:text-white"
+              >
+                <i class="fa-brands fa-whatsapp fa-xl"></i>
+                Enviar mensaje
+              </button>
+            </div>
+
+            <div class="col-span-2 flex justify-end">
+              <button class="btn text-blue-500 bg-blue-100 hover:border-blue-500 rounded-lg">
+                Volver a comprar
+              </button>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  }
+</section>
