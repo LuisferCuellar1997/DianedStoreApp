@@ -8,7 +8,8 @@ export interface Order {
   items: Item[];
   total: number;
   createdAt?: Timestamp;
-  status?:string
+  status?:string;
+  numGuia?:string;
 }
 
 export interface Customer {

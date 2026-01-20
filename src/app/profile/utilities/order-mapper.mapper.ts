@@ -32,6 +32,7 @@ export class OrderMapper {
         total: order.total,
         createdAt: order.createdAt?.toDate(),
         status: order.status, // 👈 AQUI
+        numGuia:order.numGuia
       })),
     );
   }

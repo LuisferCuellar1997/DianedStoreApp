@@ -12,6 +12,7 @@ export class OrderService {
     return addDoc(ref,{
       ...order,
       status:'Pendiente',
+      numGuia:'',
       createdAt:serverTimestamp(),
     });
   }

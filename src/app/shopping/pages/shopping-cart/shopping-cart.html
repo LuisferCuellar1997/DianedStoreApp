@@ -1,255 +1,193 @@
-<div class="min-h-screen flex flex-col">
-  <app-navbar [showFilters]="false" [showSearchbar]="false" [showShoppingBag]="false" />
-  <div class="mx-4 md:lg:xl:mx-14 mt-2">
-    <a href="" class="flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path fill="currentColor" d="m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z" />
-      </svg>
-      <span class="text text-lg">Volver</span></a
-    >
-  </div>
-  @if(this.shoppingList().length>0){
-  <div class="flex-1">
-    <div
-      class="sticky top-0 z-40 bg-base-100/70 backdrop-blur-md sm:border-b border-base-content/10 shadow-sm"
-    >
-      <div class="max-w-5xl mx-auto px-4 py-3">
-        <h2 class="text-2xl font-bold text-center">Resumen de compra</h2>
-      </div>
-    </div>
-    <div class="md:w-[80%] mx-auto grid grid-cols-1 md:grid-cols-3 font-Poppins full">
-      <div class="col-span-2 flex flex-col ">
-        <div class="flex-1 overflow-y-auto px-4 py-4">
-          <div class="md:hidden flex flex-col gap-4">
-            @for (prod of shoppingList(); track prod.product.id + prod.selectedSize) {
-            <div class="w-full bg-base-100 rounded-2xl shadow-sm p-4 flex gap-4 items-start">
-              <!-- IMAGEN -->
-              <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0">
+<app-navbar />
+
+<section class="w-full bg-gray-100 min-h-screen">
+  <div class="mx-auto max-w-6xl px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- LISTA (izquierda) -->
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <!-- Título -->
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h1 class="text-xl font-semibold text-gray-900">Resumen de compra</h1>
+        </div>
+
+        <!-- Header (solo desktop) -->
+        <div
+          class="hidden md:grid px-6 py-3 text-sm font-semibold text-gray-500 border-b border-gray-200"
+          style="grid-template-columns: 1.6fr 100px 120px 170px"
+        >
+          <div>Producto</div>
+          <div>Precio</div>
+          <div>Cantidad</div>
+          <div class="text-right">Subtotal</div>
+        </div>
+
+        <!-- Lista -->
+        @if (shoppingList().length === 0) {
+          <div class="px-6 py-10 text-gray-600">Tu carrito está vacío.</div>
+        } @else {
+          @for (item of shoppingList(); track item.product.id + '-' + item.selectedSize) {
+            <!-- ===================== -->
+            <!-- DESKTOP ROW (md+) -->
+            <!-- ===================== -->
+            <div
+              class="hidden md:grid px-6 py-5 border-b border-gray-200 items-center"
+              style="grid-template-columns: 1.6fr 100px 120px 170px"
+            >
+              <!-- Producto -->
+              <div class="flex gap-4 items-center min-w-0">
                 <img
-                  [src]="prod.product.images.at(0)"
-                  [alt]="prod.product.description"
-                  class="w-full h-full object-cover"
+                  class="w-16 h-16 rounded-lg object-cover"
+                  [src]="item.product.images.at(0)"
+                  alt="product"
                 />
+
+                <div class="min-w-0">
+                  <!-- ✅ 2 líneas (no se corta feo) -->
+                  <p class="font-semibold text-gray-900 leading-tight line-clamp-2">
+                    {{ item.product.description | titlecase }}
+                  </p>
+
+                  <p class="text-sm text-gray-500 truncate">
+                    {{ item.product.brand | titlecase }} - Ref {{ item.product.reference }}
+                  </p>
+
+                  <p class="text-sm text-gray-400">Talla {{ item.selectedSize }}</p>
+                </div>
               </div>
 
-              <!-- CONTENIDO -->
-              <div class="flex-1 flex flex-col gap-2">
-                <!-- TÍTULO -->
-                <div>
-                  <p class="font-semibold leading-tight">
-                    {{ prod.product.description }}
-                  </p>
-                  <p class="text-sm text-base-content/60">
-                    {{ prod.product.brand }} · Ref {{ prod.product.reference }} · Talla
-                    {{ prod.selectedSize }}
-                  </p>
-                </div>
+              <!-- Precio unitario -->
+              <div class="font-semibold text-gray-800 whitespace-nowrap">
+                {{ item.product.price | currency: 'COP' : 'symbol' : '1.0-0' }}
+              </div>
 
-                <!-- CONTROLES -->
-                <div class="flex items-center justify-between mt-1">
-                  <!-- CANTIDAD -->
-                  <div class="flex items-center gap-3">
-                    <button
-                      class="btn btn-circle btn-primary btn-sm"
-                      (click)="
-                        changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, -1)
-                      "
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="size-4"
-                      >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
-                      </svg>
-                    </button>
+              <!-- Cantidad -->
+              <div class="flex items-center gap-3 whitespace-nowrap">
+                <!-- - -->
+                <button
+                  class="btn btn-primary btn-circle btn-sm"
+                  (click)="
+                    changeQuantity(item.product.id, item.selectedSize, item.quantity ?? 1, -1)
+                  "
+                  [disabled]="(item.quantity ?? 1) === 1"
+                  type="button"
+                >
+                  <i class="fa-solid fa-minus"></i>
+                </button>
 
-                    <span class="font-semibold text-lg">
-                      {{ prod.quantity }}
-                    </span>
+                <span class="w-6 text-center font-semibold text-gray-900">
+                  {{ item.quantity ?? 1 }}
+                </span>
+                <!-- + -->
+                <button
+                  class="btn btn-primary btn-circle btn-sm"
+                  (click)="
+                    changeQuantity(item.product.id, item.selectedSize, item.quantity ?? 1, +1)
+                  "
+                  [disabled]="!shoppingService.canIncrease(item)"
+                  type="button"
+                >
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
 
-                    <button
-                      class="btn btn-circle btn-primary btn-sm"
-                      (click)="
-                        changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, 1)
-                      "
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="size-4"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M12 4.5v15m7.5-7.5h-15"
-                        />
-                      </svg>
-                    </button>
-                  </div>
+              <!-- Subtotal + Trash (layout estable, sin montarse) -->
+              <div class="grid grid-cols-[1fr_auto] items-center gap-3">
+                <span class="font-semibold text-gray-900 text-right whitespace-nowrap">
+                  {{
+                    item.product.price * (item.quantity ?? 1) | currency: 'COP' : 'symbol' : '1.0-0'
+                  }}
+                </span>
 
-                  <!-- DELETE -->
-                  <button
-                    class="btn btn-circle btn-sm btn-error"
-                    (click)="deleteProduct(prod.product.id, prod.selectedSize)"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="size-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                <!-- SUBTOTAL -->
-                <div class="text-right font-bold text-lg">
-                  {{ prod.quantity! * prod.product.price | currency : 'COP' : 'symbol' : '1.0-0' }}
-                </div>
+                <button
+                  class="btn btn-error btn-circle border-red-400 shrink-0"
+                  (click)="deleteProduct(item.product.id, item.selectedSize)"
+                  type="button"
+                  aria-label="Eliminar"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </div>
             </div>
 
-            }
-          </div>
-          <!-- Desktop -->
-          <div class="hidden md:lg:block">
-            <table class="table w-full table-fixed">
-              <thead class="text text-xl block w-full">
-                <tr class="table w-full table-fixed">
-                  <th class="w-[35%]">Producto</th>
-                  <th class="w-[10%]">Precio</th>
-                  <th class="w-[15%] text-center">Cantidad</th>
-                  <th class="w-[20%]">Subtotal</th>
-                  <th class="w-[10%]"></th>
-                </tr>
-              </thead>
-              <tbody class="block md:lg:max-h-100 2xl:max-h-125 overflow-y-auto overflow-x-hidden">
-                @for (prod of shoppingList(); let i= $index; track i) {
-                <tr>
-                  <td>
-                    <div class="flex items-center gap-3">
-                      <div class="avatar">
-                        <div class="rounded-xl h-20 w-20">
-                          <img [src]="prod?.product?.images?.at(0)" [alt]="prod.product.category" />
-                        </div>
-                      </div>
-                      <div>
-                        <div class="font-bold">{{ prod.product.description | titlecase }}</div>
-                        <div class="text-sm opacity-50">
-                          <b>{{ prod.product.brand | titlecase }}</b> - Ref
-                          <b>{{ prod.product.reference }}</b>
-                        </div>
-                        <div class="text-sm opacity-50">
-                          Talla <b>{{ prod.selectedSize | titlecase }}</b>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-base font-bold text-base-content/70 leading-relaxed">
-                      {{ prod.product.price | currency : 'COP' : 'symbol' : '1.0-0' }}
-                    </p>
-                  </td>
-                  <td>
-                    <div class="flex justify-center items-center gap-4">
-                      <button
-                        class="btn btn-sm btn-primary btn-circle"
-                        (click)="
-                          changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, 1)
-                        "
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-6"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M12 4.5v15m7.5-7.5h-15"
-                          />
-                        </svg>
-                      </button>
-                      <span class="font-bold text text-xl">{{ prod.quantity }}</span>
-                      <button
-                        class="btn btn-sm btn-primary btn-circle"
-                        (click)="
-                          changeQuantity(prod.product.id, prod.selectedSize, prod.quantity!, -1)
-                        "
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-6"
-                        >
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-base font-bold text-base-content/70 leading-relaxed">
-                      {{
-                        prod.quantity! * prod.product.price | currency : 'COP' : 'symbol' : '1.0-0'
-                      }}
-                    </p>
-                  </td>
-                  <th>
-                    <button
-                      class="btn btn-circle btn-error btn-md"
-                      (click)="deleteProduct(prod.product.id, prod.selectedSize)"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="size-6"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                        />
-                      </svg>
-                    </button>
-                  </th>
-                </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div>
-        <app-shopping-summary [hideButton]="false"/>
+            <!-- ===================== -->
+            <!-- MOBILE CARD (sm) -->
+            <!-- ===================== -->
+            <div class="md:hidden px-4 py-4 border-b border-gray-200">
+              <div class="flex gap-3 items-start">
+                <img
+                  class="w-16 h-16 rounded-lg object-cover"
+                  [src]="item.product.images.at(0)"
+                  alt="product"
+                />
+
+                <div class="flex-1 min-w-0">
+                  <p class="font-semibold text-gray-900 leading-tight">
+                    {{ item.product.description | titlecase }}
+                  </p>
+
+                  <p class="text-xs text-gray-500 mt-1">
+                    {{ item.product.brand | titlecase }} - Ref {{ item.product.reference }} - Talla
+                    {{ item.selectedSize }}
+                  </p>
+                </div>
+
+                <!-- Trash -->
+                <button
+                  class="btn btn-error btn-circle border-red-400"
+                  (click)="deleteProduct(item.product.id, item.selectedSize)"
+                  type="button"
+                  aria-label="Eliminar"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+
+              <div class="mt-3 flex items-center justify-between">
+                <!-- Cantidad -->
+                <div class="flex items-center gap-2">
+                  <button
+                  class="btn btn-primary btn-circle btn-sm"
+                  (click)="
+                    changeQuantity(item.product.id, item.selectedSize, item.quantity ?? 1, -1)
+                  "
+                  [disabled]="(item.quantity ?? 1) === 1"
+                  type="button"
+                >
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+
+                <span class="w-6 text-center font-semibold text-gray-900">
+                  {{ item.quantity ?? 1 }}
+                </span>
+                <!-- + -->
+                <button
+                  class="btn btn-primary btn-circle btn-sm"
+                  (click)="
+                    changeQuantity(item.product.id, item.selectedSize, item.quantity ?? 1, +1)
+                  "
+                  [disabled]="!shoppingService.canIncrease(item)"
+                  type="button"
+                >
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+                </div>
+
+                <!-- Subtotal (derecha como tu imagen) -->
+                <div class="font-semibold text-gray-900 whitespace-nowrap">
+                  {{
+                    item.product.price * (item.quantity ?? 1) | currency: 'COP' : 'symbol' : '1.0-0'
+                  }}
+                </div>
+              </div>
+            </div>
+          }
+        }
       </div>
     </div>
+
+    <!-- SUMMARY (derecha) -->
+    <div class="lg:col-span-1">
+      <app-shopping-summary [showProdToPay]="true" />
+    </div>
   </div>
-}@else {
-  <div class="flex justify-center">
-    <h2 class="text text-xl font-Poppins">No has agregado productos a tu carrito</h2>
-  </div>
-}
-</div>
+</section>

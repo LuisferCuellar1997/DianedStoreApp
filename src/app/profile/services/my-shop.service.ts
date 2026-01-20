@@ -2,7 +2,6 @@ import { inject, Injectable, signal } from '@angular/core';
 import { collectionData, Firestore } from '@angular/fire/firestore';
 import { Customer, Order } from '../../orders/interfaces/order.interface';
 import { collection, query, where } from 'firebase/firestore';
-import { Shop } from '../../shopping/interfaces/shop.interface';
 import { forkJoin, map, Observable, pipe, take } from 'rxjs';
 import { MyShop } from '../interfaces/my-shop.interface';
 import { ProductService } from '../../products/services/products.service';

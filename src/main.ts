@@ -1,7 +1,7 @@
 import 'zone.js';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { App } from './app/app';
-import { environment } from './environments/environments';
+
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeEsCo from '@angular/common/locales/es-CO';
@@ -13,6 +13,8 @@ import { provideStorage, getStorage } from '@angular/fire/storage';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router'; // <-- IMPORTANTE
 import { routes } from './app/app.routes';      // <-- IMPORTANTE
+import { environment } from './environments/environment';
+
 registerLocaleData(localeEsCo);
 
 bootstrapApplication(App,  {

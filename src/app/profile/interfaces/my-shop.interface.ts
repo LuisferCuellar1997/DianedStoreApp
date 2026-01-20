@@ -12,6 +12,7 @@ export interface MyShop {
   total: number;
   createdAt?: Date;
   status?:string;
+  numGuia?:string;
 }
 
 export interface MyShopItem {
