@@ -1,19 +1,23 @@
 import { inject, Injectable } from '@angular/core';
 import { addDoc, collection, Firestore, serverTimestamp } from '@angular/fire/firestore';
 import { Order } from '../interfaces/order.interface';
+import { AuthSessionService } from '../../session/services/auth-session.service';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class OrderService {
+  private firestore = inject(Firestore);
+  private session = inject(AuthSessionService);
 
-  private firestore=inject(Firestore)
+  async addOrder(order: Order) {
+    const user = await this.session.ensureReady();
 
-  addOrder(order:Order){
-    const ref=collection(this.firestore,'orders');
-    return addDoc(ref,{
+    const ref = collection(this.firestore, 'orders');
+    return addDoc(ref, {
       ...order,
-      status:'Pendiente',
-      numGuia:'',
-      createdAt:serverTimestamp(),
+      ownerUid: user.uid,
+      status: 'Pendiente',
+      numGuia: '',
+      createdAt: serverTimestamp(),
     });
   }
 }

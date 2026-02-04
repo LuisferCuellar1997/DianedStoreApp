@@ -103,7 +103,7 @@ export class PersonalInfoForm {
     const raw = this.personalInfoForm.getRawValue();
 
     this.citiesService.personalInfoFormFilled.set({
-      email: raw.email ?? '',
+      email: raw.email?.trim() ?? '',
       firstName: raw.firstName ?? '',
       lastName: raw.lastName ?? '',
       tipDoc: raw.docType ?? null,

@@ -10,6 +10,7 @@ export interface Order {
   createdAt?: Timestamp;
   status?:string;
   numGuia?:string;
+  ownerUid?:string;
 }
 
 export interface Customer {

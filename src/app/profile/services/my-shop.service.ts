@@ -2,9 +2,10 @@ import { inject, Injectable, signal } from '@angular/core';
 import { collectionData, Firestore } from '@angular/fire/firestore';
 import { Customer, Order } from '../../orders/interfaces/order.interface';
 import { collection, query, where } from 'firebase/firestore';
-import { forkJoin, map, Observable, pipe, take } from 'rxjs';
+import { forkJoin, from, map, Observable, pipe, switchMap, take } from 'rxjs';
 import { MyShop } from '../interfaces/my-shop.interface';
 import { ProductService } from '../../products/services/products.service';
+import { AuthSessionService } from '../../session/services/auth-session.service';
 
 @Injectable({ providedIn: 'root' })
 export class ShopHistory {
@@ -12,16 +13,23 @@ export class ShopHistory {
 
   firebase = inject(Firestore);
   productService = inject(ProductService);
+  private session=inject(AuthSessionService)
   userInfo = signal<Customer>({});
   getShopHistory() {
     this.userInfo.set(this.readCustomer() ?? {});
-    const result = query(
-      collection(this.firebase, 'orders'),
-      where('customer.numDoc', '==', this.userInfo().numDoc),
-    );
-    return collectionData(result, { idField: 'id' }) as Observable<Order[] | []>;
-  }
 
+    return from(this.session.ensureReady()).pipe(
+      switchMap((user) => {
+        const result = query(
+          collection(this.firebase, 'orders'),
+          where('ownerUid', '==', user.uid),
+          where('customer.numDoc', '==', this.userInfo().numDoc),
+        );
+
+        return collectionData(result, { idField: 'id' }) as Observable<Order[]>;
+      }),
+    );
+  }
   readCustomer() {
     //customerInfo
     const customerInfo = localStorage.getItem('customerInfo');
@@ -63,5 +71,4 @@ export class ShopHistory {
   resolveOrders(orders: Order[]): Observable<MyShop[]> {
     return forkJoin(orders.map((order) => this.resolveOrder(order)));
   }
-
 }

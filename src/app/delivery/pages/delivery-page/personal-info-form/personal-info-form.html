@@ -41,6 +41,7 @@
     <div class="col-span-2">
       <span class="text text-xs block text-gray-400">Correo</span>
       <input
+        (keydown.space)="$event.preventDefault()"
         type="text"
         class="input focus:outline-none focus:text-black focus:ring-0 text-gray-400 focus:shadow-md border-gray-500 border rounded-lg w-full mt-1 py-6"
         placeholder="Correo Electrónico*"
