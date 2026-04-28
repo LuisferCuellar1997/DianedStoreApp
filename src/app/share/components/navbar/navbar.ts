@@ -15,6 +15,7 @@ export class Navbar {
   searchChange = output<string>();
   filtersChange = output<Partial<ProductFilters>>();
   showFilters=input<boolean>(true);
+  showBrand=input<boolean>(true);
   showSearchbar=input<boolean>(true);
   showShoppingBag=input<boolean>(true);
   showProfile=input<boolean>(true)

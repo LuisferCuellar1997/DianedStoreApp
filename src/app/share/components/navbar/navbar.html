@@ -1,15 +1,20 @@
+@if(showBrand()){
+<a href="#" class="flex justify-center btn btn-ghost py-0 my-0 text-xl font-Dancing font-black lg:hidden">DianedStore</a>
+}
 <div class="navbar md:px-6 bg-base-100 shadow-sm sticky top-0 z-50">
   <div class="navbar-start">
-    <div class="dropdown">
+    <div class="dropdown flex justify-between">
       <!--  -->
       @if (showFilters()) {
         <app-right-navbar (filtersChange)="onFiltersChange($event)"> </app-right-navbar>
         <!--  -->
-      }
-    </div>
+      }    </div>
   </div>
   <div class="navbar-center">
-    <a class="btn btn-ghost text-2xl font-Dancing font-black" href="#">Dianed Store</a>
+    @if(!showBrand()){
+          <a href="#" class="flex justify-center btn btn-ghost py-0 my-0 text-xl font-Dancing font-black lg:hidden">DianedStore</a>
+    }
+    <a class="btn btn-ghost text-2xl font-Dancing font-black hidden lg:inline-flex" href="#">Dianed Storex</a>
   </div>
   <div class="navbar-end lg:xl:flex lg:xl:gap-5 gap-2">
     <!--  -->

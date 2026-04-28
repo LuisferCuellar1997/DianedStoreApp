@@ -23,8 +23,8 @@
             <!-- Imagen -->
             <div class="avatar indicator">
               <span class="indicator-item badge badge-info">{{item.quantity}}</span>
-              <div class="h-full w-full rounded-lg">
-                <img class="w-full h-full" alt="Product" [src]="item.product.images.at(0)" />
+              <div class="w-20 rounded-lg">
+                <img class="w-20" alt="Product" [src]="item.product.images.at(0)" />
               </div>
             </div>
 
@@ -56,7 +56,7 @@
     </div>
   }
 
-  <!-- ✅ ESTADO STOCK -->
+
   @if (shoppingService.stockStatus() === 'checking') {
     <div class="alert">
       <span>Verificando stock...</span>
